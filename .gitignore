@@ -1,0 +1,7 @@
+# .gitignore
+
+# Ignore Terraform working directory
+.terraform/
+
+# Ignore Terraform lock file
+.terraform.lock.hcl

@@ -9,19 +9,19 @@ variable "aws_region" {
 variable "aws_access_key_id" {
     description="aws_access_key_id"
     type=string
-    default="ASIAXZSEYFC6T7OFVBEN"
+    default="ASIAXZSEYFC65WJZQNA5"
 }
 
 variable "aws_secret_access_key" {
     description="aws_secret_access_key"
     type=string
-    default="Hs7L87Gsoi+FE0tQz0y1U1luzjMSQDGkpZXfsvxM"
+    default="nr1LDMWwiRhVzZMWnT84+6+AwYJ7p++85+Ay3vEH"
 }
 
 variable "aws_session_token" {
     description="aws_session_token"
     type=string
-    default="FwoGZXIvYXdzEOT//////////wEaDMwquLJfx6KLJY9l8iLGAaydCkx5RbECGnfTJQaVmrdDt5EMKASe9q0wJQM8TplDFPqqnpJVi/XUjEYkSKBUR2G1CTZdpjz++zfpy2R+ni0y47LSTFeTaInF/YJNaWuLqj3GpQUwgiFATbH3SwAb4oUCs71xf05E+aGcBEcNQ4CZvC2wIx0l26k8QFLRCfd2WlzobOdiBs7Xvt7ELZKDxl+enZP6az5Zf4XYL5BJWr/wH9h10PmHR8zpjzhiFtJiKjUG8+xtStQGnVCuF+kt3NNdttYwMCiv1a+rBjItZ4HPAEvgH8+GXQJ1wh1ozXbIuo2w5uu6ROfHuPSGCi5RfxlWdRGyQxFXP5lT"
+    default="FwoGZXIvYXdzEPz//////////wEaDPbN2E9ySDxy0yhJvSLGAfztsRniCSYhXAeTZYHtTFxYNt2gFZBSRW/GNtzaXZgdPzoDrYSQb/cEKcM7HyPTz9Xsk8Zcy4inzG8yUxSGM1S6Zl13zI3gGVsbfwwDIhflpTOdCVBOPKOAbqt6+CAT1VvS82NGz7d85ADM+xeKxz9Zm+Wr+jH1yjXlDjO/F4L6M3H0faZFe02pZh9bT3JC/z5wHRlLj2i+/0Q7g43OZ2MK6Z+Jl7u+R3Yfcy6ChgbgTq88uwvSDu/EhnyFG/zKwRV4VWrbIijb+7SrBjIt8+CGD+rloE/5kh+0NBAx4LYIx7ZEg3sy8fuge+f0PL9vqYi6foxWKjWy/TaO"
 }
 
 
@@ -33,10 +33,22 @@ variable "security_group_name" {
 }
 
 variable "ssh_cidr_blocks" {
-    description="what traffic is allowed"
+    description="allow ssh"
     type=list(string)
     default=["0.0.0.0/0"] # anywhere
 }
+
+variable "http_cidr_blocks" {
+    description="allow http"
+    type=list(string)
+    default=["0.0.0.0/0"] # anywhere
+}
+
+variable "outbound_didr_blocks" {
+    description="allows all"
+    type=list(string)
+    default=["0.0.0.0/0"] # anywhere
+}   
 
 
 # instance configuration
