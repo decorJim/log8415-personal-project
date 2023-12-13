@@ -6,8 +6,8 @@ python3 sendToMaster.py --ip1=ipdestinationmachine --ip2=10.0.0.2 --ip3=10.0.0.3
 command for testing
 """
 
-def runCommand(ip1, ip2, ip3, ip4, ip5):
-    url = f"http://{ip1}/run_command"
+def runCommand(ipurl,ip1, ip2, ip3, ip4, ip5):
+    url = f"http://{ipurl}/run_command"
 
     # Payload to be sent in the POST request
     payload = {
@@ -37,6 +37,7 @@ def runCommand(ip1, ip2, ip3, ip4, ip5):
 if __name__ == "__main__":
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="Script to run a command on the master node.")
+    parser.add_argument("--ipurl", required=True, help="IP public address of the master node")
     parser.add_argument("--ip1", required=True, help="IP address of the master node")
     parser.add_argument("--ip2", required=True, help="IP address of the first slave node")
     parser.add_argument("--ip3", required=True, help="IP address of the second slave node")
@@ -46,4 +47,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Run the command using the provided IP addresses
-    runCommand(args.ip1, args.ip2, args.ip3, args.ip4, args.ip5)
+    runCommand(args.ipurl,args.ip1, args.ip2, args.ip3, args.ip4, args.ip5)

@@ -33,12 +33,20 @@ def run_command():
 
   os.chdir('/')
 
-  # Run a command to print the IP addresses
-  command = f'echo "IP1: {ip1}, IP2: {ip2}, IP3: {ip3}, IP4 {ip4}, IP5 {ip5}" > clusterip.txt'
-  result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+  commands=[
+     f'echo "IP1: {ip1}, IP2: {ip2}, IP3: {ip3}, IP4 {ip4}, IP5 {ip5}" > clusterip.txt',
+     'apt-get install libaio1 -y',
+     'apt-get install unzip -y',
+     'apt-get install libmecab2 -y',
+     'apt-get install sysbench -y',
+     'apt-get install libncurses5 -y',
+     'apt-get install libtinfo5 -y',
+     'touch confirms.ini',
+  ]
 
-  # Print the result to the console
-  print('Command Output:', result.stdout)
+  for command in commands:
+     result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
 
   # Return the command output as the response
   return result.stdout, 200

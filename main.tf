@@ -74,80 +74,57 @@ output "generated_key" {
 
 
 
-# # instance for mysql standalone
-# resource "aws_instance" "mysql_standalone" {
-#   ami = var.ami_id
-#   instance_type=var.instance_type
-#   vpc_security_group_ids=[aws_security_group.my_group_1.id]
-#   key_name=aws_key_pair.generated_key.key_name
-#   # script for standalone setup
-#   user_data = <<-EOF
-#       #!/bin/bash
+# instance for mysql standalone
+resource "aws_instance" "mysql_standalone" {
+  ami = var.ami_id
+  instance_type=var.instance_type
+  vpc_security_group_ids=[aws_security_group.my_group_1.id]
+  key_name=aws_key_pair.generated_key.key_name
+  # script for standalone setup
+  user_data = file("${path.module}/sql_standalone.sh")
+     
+  lifecycle {
+    create_before_destroy=true
+  }
 
-#       sudo apt-get update -y
-#       sudo apt-get upgrade -y
+  root_block_device {
+    volume_type=var.volume_type
+    volume_size=var.volume_size
+  }
+  
+  availability_zone=var.availability_zone
 
-#       # install mysql server
-#       sudo apt-get install mysql-server -y
-#       sudo apt-get install unzip -y
-#       sudo apt-get install sysbench -y
-#       sudo apt-get install git -y
+}
 
-#       # install sakila
-#       cd tmp
-#       wget http://downloads.mysql.com/docs/sakila-db.zip
-#       unzip sakila-db.zip
-#       cd ..
-#       mysql -e "SOURCE /tmp/sakila-db/sakila-schema.sql;"
-#       mysql -e "SOURCE /tmp/sakila-db/sakila-data.sql;"
-
-#       # user to run benchmarks
-#       mysql -e "CREATE USER 'admin'@'localhost' IDENTIFIED BY '123';"
-#       mysql -e "GRANT ALL PRIVILEGES on sakila.* TO 'admin'@'localhost';"
-
-#       # standalone results
-#       sysbench --db-driver=mysql --mysql-db=sakila --mysql-user=admin --mysql_password=123 --table-size=50000 --tables=10 /usr/share/sysbench/oltp_read_write.lua prepare
-#       sysbench --db-driver=mysql --mysql-db=sakila --mysql-user=admin --mysql_password=123 --table-size=50000 --tables=10 --threads=8 --max-time=20 /usr/share/sysbench/oltp_read_write.lua run > mysql-standalone-results
-#     EOF
-#   lifecycle {
-#     create_before_destroy=true
-#   }
-
-#   root_block_device {
-#     volume_type=var.volume_type
-#     volume_size=var.volume_size
-#   }
-
-#   availability_zone=var.availability_zone
-
-# }
-
-# resource "null_resource" "delay_mysql_standalone" {
-#   depends_on=[aws_instance.mysql_standalone]
-#   provisioner "local-exec" {
-#     command = "sleep 270"  # 270 seconds or 4.5 minutes
-#   }
-# }
+resource "null_resource" "delay_mysql_standalone" {
+  depends_on=[aws_instance.mysql_standalone]
+  provisioner "local-exec" {
+    command = "sleep 186"  # 3.10 min
+  }
+}
 
 
-# output "instance_id" {
-#     value=aws_instance.mysql_standalone.id
-# }
+output "instance_id" {
+  depends_on=[null_resource.delay_mysql_standalone]
+  value=aws_instance.mysql_standalone.id
+}
 
-# output "mysql_standalone_details" {
-#   value = aws_instance.mysql_standalone
-# }
+output "mysql_standalone_details" {
+  depends_on=[null_resource.delay_mysql_standalone]
+  value = aws_instance.mysql_standalone
+}
 
 ############################################ mySQL cluster #################################################
 
 # master instance
 resource "aws_instance" "master_node" {
+  depends_on=[null_resource.delay_mysql_standalone]
   ami = var.ami_id
   instance_type=var.instance_type
   vpc_security_group_ids=[aws_security_group.my_group_1.id]
   key_name=aws_key_pair.generated_key.key_name
   # script for master
-  user_data = file("${path.module}/sql_cluster.sh")
+  user_data = file("${path.module}/sql_cluster_master.sh")
   lifecycle {
     create_before_destroy=true
   }
@@ -162,6 +139,7 @@ resource "aws_instance" "master_node" {
 
 # slave nodes
 resource "aws_instance" "slaves_node" {
+  depends_on=[null_resource.delay_mysql_standalone]
   ami = var.ami_id
   instance_type=var.instance_type
   vpc_security_group_ids=[aws_security_group.my_group_1.id]
@@ -203,7 +181,8 @@ resource "null_resource" "wait_for_instances" {
   provisioner "local-exec" {
     command = <<-EOT
       python3 ${path.module}/sendToMaster.py \
-        --ip1=${aws_instance.master_node.public_ip} \
+        --ipurl=${aws_instance.master_node.public_ip} \
+        --ip1=${aws_instance.master_node.private_ip} \
         --ip2=${aws_instance.slaves_node[0].private_ip} \
         --ip3=${aws_instance.slaves_node[1].private_ip} \
         --ip4=${aws_instance.slaves_node[2].private_ip} \
