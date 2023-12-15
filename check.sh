@@ -23,6 +23,7 @@ cd ..
 sudo mkdir -p /etc/mysql/
 sudo touch /etc/mysql/my.cnf
 echo "[mysqld]" | sudo tee -a /etc/mysql/my.cnf
+echo "default_authentication_plugin=mysql_native_password" | sudo tee -a /etc/mysql/my.cnf
 echo "ndbcluster" | sudo tee -a /etc/mysql/my.cnf
 echo "[mysql_cluster]" | sudo tee -a /etc/mysql/my.cnf
 echo "bind-address = 0.0.0.0" | sudo tee -a /etc/mysql/my.cnf
@@ -35,9 +36,10 @@ sudo systemctl enable mysql
 
 sudo wget http://downloads.mysql.com/docs/sakila-db.zip
 unzip sakila-db.zip 
+
 sudo mysql -e "SOURCE /sakila-db/sakila-schema.sql;"
 sudo mysql -e "SOURCE /sakila-db/sakila-data.sql;"
 sudo mysql -e "CREATE USER 'root'@'localhost' IDENTIFIED BY '123';"
 sudo mysql -e "GRANT ALL PRIVILEGES on sakila.* TO 'root'@'localhost';"
-sysbench --db-driver=mysql --mysql-db=sakila --mysql-user=root --mysql_password=123 --table-size=50000 --tables=10 /usr/share/sysbench/oltp_read_write.lua prepare
-sysbench --db-driver=mysql --mysql-db=sakila --mysql-user=root --mysql_password=123 --table-size=50000 --tables=10 --threads=8 --max-time=20 /usr/share/sysbench/oltp_read_write.lua run | sudo tee -a mysql-cluster-results
+sudo sysbench --db-driver=mysql --mysql-db=sakila --mysql-user=root --mysql_password=123 --table-size=50000 --tables=10 /usr/share/sysbench/oltp_read_write.lua prepare
+sudo sysbench --db-driver=mysql --mysql-db=sakila --mysql-user=root --mysql_password=123 --table-size=50000 --tables=10 --threads=8 --max-time=20 /usr/share/sysbench/oltp_read_write.lua run | sudo tee -a mysql-cluster-results
