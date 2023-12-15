@@ -74,51 +74,51 @@ output "generated_key" {
 
 
 
-# instance for mysql standalone
-resource "aws_instance" "mysql_standalone" {
-  ami = var.ami_id
-  instance_type=var.instance_type
-  vpc_security_group_ids=[aws_security_group.my_group_1.id]
-  key_name=aws_key_pair.generated_key.key_name
-  # script for standalone setup
-  user_data = file("${path.module}/sql_standalone.sh")
+# # instance for mysql standalone
+# resource "aws_instance" "mysql_standalone" {
+#   ami = var.ami_id
+#   instance_type=var.instance_type
+#   vpc_security_group_ids=[aws_security_group.my_group_1.id]
+#   key_name=aws_key_pair.generated_key.key_name
+#   # script for standalone setup
+#   user_data = file("${path.module}/sql_standalone.sh")
      
-  lifecycle {
-    create_before_destroy=true
-  }
+#   lifecycle {
+#     create_before_destroy=true
+#   }
 
-  root_block_device {
-    volume_type=var.volume_type
-    volume_size=var.volume_size
-  }
+#   root_block_device {
+#     volume_type=var.volume_type
+#     volume_size=var.volume_size
+#   }
   
-  availability_zone=var.availability_zone
+#   availability_zone=var.availability_zone
 
-}
+# }
 
-resource "null_resource" "delay_mysql_standalone" {
-  depends_on=[aws_instance.mysql_standalone]
-  provisioner "local-exec" {
-    command = "sleep 186"  # 3.10 min
-  }
-}
+# resource "null_resource" "delay_mysql_standalone" {
+#   depends_on=[aws_instance.mysql_standalone]
+#   provisioner "local-exec" {
+#     command = "sleep 186"  # 3.10 min
+#   }
+# }
 
 
-output "instance_id" {
-  depends_on=[null_resource.delay_mysql_standalone]
-  value=aws_instance.mysql_standalone.id
-}
+# output "instance_id" {
+#   depends_on=[null_resource.delay_mysql_standalone]
+#   value=aws_instance.mysql_standalone.id
+# }
 
-output "mysql_standalone_details" {
-  depends_on=[null_resource.delay_mysql_standalone]
-  value = aws_instance.mysql_standalone
-}
+# output "mysql_standalone_details" {
+#   depends_on=[null_resource.delay_mysql_standalone]
+#   value = aws_instance.mysql_standalone
+# }
 
 ############################################ mySQL cluster #################################################
 
 # master instance
 resource "aws_instance" "master_node" {
-  depends_on=[null_resource.delay_mysql_standalone]
+#  depends_on=[null_resource.delay_mysql_standalone]
   ami = var.ami_id
   instance_type=var.instance_type
   vpc_security_group_ids=[aws_security_group.my_group_1.id]
@@ -139,12 +139,13 @@ resource "aws_instance" "master_node" {
 
 # slave nodes
 resource "aws_instance" "slaves_node" {
-  depends_on=[null_resource.delay_mysql_standalone]
+#  depends_on=[null_resource.delay_mysql_standalone]
   ami = var.ami_id
   instance_type=var.instance_type
   vpc_security_group_ids=[aws_security_group.my_group_1.id]
   key_name=aws_key_pair.generated_key.key_name
-  count         = 4
+  count         = 3
+  user_data = file("${path.module}/sql_cluster_slave.sh")
   lifecycle {
     create_before_destroy=true
   }
@@ -172,7 +173,7 @@ resource "null_resource" "ec2_cluster_timeout" {
   }
 }
 
-resource "null_resource" "wait_for_instances" {
+resource "null_resource" "wait_for_master_instance" {
   depends_on = [
     null_resource.ec2_cluster_timeout
   ]
@@ -185,8 +186,68 @@ resource "null_resource" "wait_for_instances" {
         --ip1=${aws_instance.master_node.private_ip} \
         --ip2=${aws_instance.slaves_node[0].private_ip} \
         --ip3=${aws_instance.slaves_node[1].private_ip} \
-        --ip4=${aws_instance.slaves_node[2].private_ip} \
-        --ip5=${aws_instance.slaves_node[3].private_ip}
+        --ip4=${aws_instance.slaves_node[2].private_ip} 
+    EOT
+  }
+}
+
+resource "null_resource" "slave_1_setup" {
+  depends_on = [
+    null_resource.wait_for_master_instance
+  ]
+
+  # Use local-exec provisioner to run a command
+  provisioner "local-exec" {
+    command = <<-EOT
+      python3 ${path.module}/sendToSlaves.py \
+        --ipurl=${aws_instance.slaves_node[0].public_ip} \
+        --ip1=${aws_instance.master_node.private_ip}
+    EOT
+  }
+}
+
+resource "null_resource" "slave_2_setup" {
+  depends_on = [
+    null_resource.wait_for_master_instance
+  ]
+
+  # Use local-exec provisioner to run a command
+  provisioner "local-exec" {
+    command = <<-EOT
+      python3 ${path.module}/sendToSlaves.py \
+        --ipurl=${aws_instance.slaves_node[1].public_ip} \
+        --ip1=${aws_instance.master_node.private_ip}
+    EOT
+  }
+}
+
+resource "null_resource" "slave_3_setup" {
+  depends_on = [
+    null_resource.wait_for_master_instance
+  ]
+
+  # Use local-exec provisioner to run a command
+  provisioner "local-exec" {
+    command = <<-EOT
+      python3 ${path.module}/sendToSlaves.py \
+        --ipurl=${aws_instance.slaves_node[2].public_ip} \
+        --ip1=${aws_instance.master_node.private_ip}
+    EOT
+  }
+}
+
+resource "null_resource" "cluster_benchmark_activation" {
+  depends_on=[
+    null_resource.slave_1_setup,
+    null_resource.slave_2_setup,
+    null_resource.slave_3_setup
+  ]
+
+  # Use local-exec provisioner to run a command
+  provisioner "local-exec" {
+    command = <<-EOT
+      python3 ${path.module}/cluster_benchmarks.py \
+        --ipurl=${aws_instance.master_node.public_ip}
     EOT
   }
 }
