@@ -9,6 +9,12 @@
 - change "aws_access_key_id.default", "aws_secret_access_key.default" and "aws_session_token.default" to the one found in your CLI details
 - enter command "terraform init"
 - enter command "terraform apply"
+- when step of cluster installation finishes
+- log into the master ec2 instance
+- copy the privateIp of the machine written below
+- go to "/" then to "/app"
+- enter command "bash check.sh privateIp"
+- wait for results
 
 # sources
 # MySQL

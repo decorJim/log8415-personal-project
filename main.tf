@@ -236,20 +236,24 @@ resource "null_resource" "slave_3_setup" {
   }
 }
 
-resource "null_resource" "cluster_benchmark_activation" {
-  depends_on=[
-    null_resource.slave_1_setup,
-    null_resource.slave_2_setup,
-    null_resource.slave_3_setup
-  ]
+# BENCHMARK PART NEEDS TO BE DONE MANUALLY CHECK INSTRUCTIONS IN README
+# resource "null_resource" "cluster_benchmark_activation" {
+#   depends_on=[
+#     null_resource.slave_1_setup,
+#     null_resource.slave_2_setup,
+#     null_resource.slave_3_setup
+#   ]
 
-  # Use local-exec provisioner to run a command
-  provisioner "local-exec" {
-    command = <<-EOT
-      python3 ${path.module}/cluster_benchmarks.py \
-        --ipurl=${aws_instance.master_node.public_ip}
-    EOT
-  }
-}
+#   # Use local-exec provisioner to run a command
+#   provisioner "local-exec" {
+#     command = <<-EOT
+#       python3 ${path.module}/cluster_benchmarks.py \
+#         --ipurl=${aws_instance.master_node.public_ip}
+#     EOT
+#   }
+# }
+
+
+
 
 
