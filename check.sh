@@ -37,7 +37,7 @@ sudo wget http://downloads.mysql.com/docs/sakila-db.zip
 unzip sakila-db.zip 
 sudo mysql -e "SOURCE /sakila-db/sakila-schema.sql;"
 sudo mysql -e "SOURCE /sakila-db/sakila-data.sql;"
-sudo mysql -e "CREATE USER 'ubuntu'@'ip-${IP_ADDRESS//./-}' IDENTIFIED BY '123';"
-sudo mysql -e "GRANT ALL PRIVILEGES on sakila.* TO 'ubuntu'@'ip-${IP_ADDRESS//./-}';"
-sysbench --db-driver=mysql --mysql-db=sakila --mysql-user=ubuntu --mysql_password=123 --table-size=50000 --tables=10 /usr/share/sysbench/oltp_read_write.lua prepare
-sysbench --db-driver=mysql --mysql-db=sakila --mysql-user=ubuntu --mysql_password=123 --table-size=50000 --tables=10 --threads=8 --max-time=20 /usr/share/sysbench/oltp_read_write.lua run | sudo tee -a mysql-cluster-results
+sudo mysql -e "CREATE USER 'root'@'ip-${IP_ADDRESS//./-}' IDENTIFIED BY '123';"
+sudo mysql -e "GRANT ALL PRIVILEGES on sakila.* TO 'root'@'ip-${IP_ADDRESS//./-}';"
+sysbench --db-driver=mysql --mysql-db=sakila --mysql-user=root --mysql_password=123 --table-size=50000 --tables=10 /usr/share/sysbench/oltp_read_write.lua prepare
+sysbench --db-driver=mysql --mysql-db=sakila --mysql-user=root --mysql_password=123 --table-size=50000 --tables=10 --threads=8 --max-time=20 /usr/share/sysbench/oltp_read_write.lua run | sudo tee -a mysql-cluster-results
