@@ -30,7 +30,7 @@ def health_check():
   return 'OK', 200
 
 @app.route('/health')
-def benchmarks()
+def benchmarks():
   script = f"bash check.sh {ip1}"
   result = subprocess.run(script, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
   return result.stdout, 200
