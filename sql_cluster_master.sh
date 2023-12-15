@@ -29,13 +29,14 @@ def health_check():
   result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
   return 'OK', 200
 
-@app.route('/health')
+@app.route('/benchmarks')
 def benchmarks():
-  script = f'bash check.sh {ip1}'
+  script = f'sudo bash /app/check.sh {ip1}'
   script_file_path = 'file.txt'
-  with open(script_file_path, 'w') as script_file:
-        script_file.write(script)
   result = subprocess.run(script, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+  with open(script_file_path, 'w') as script_file:
+      script_file.write(result.stdout)
+      script_file.write(f'Script Errors:\n{result.stderr}')
   return result.stdout, 200
 
 @app.route('/run_command', methods=['POST'])
