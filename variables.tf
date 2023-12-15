@@ -9,19 +9,19 @@ variable "aws_region" {
 variable "aws_access_key_id" {
     description="aws_access_key_id"
     type=string
-    default="ASIAXZSEYFC67YBQ5IU4"
+    default="ASIAXZSEYFC6YLDSK2DB"
 }
 
 variable "aws_secret_access_key" {
     description="aws_secret_access_key"
     type=string
-    default="PWlwpsBN4oTrbaup2h7szuJQWIMufECpGehqS5D8"
+    default="5u3o03p4JFXOOG2gaFVFjEWl66HNjcPX8Bx0h4zu"
 }
 
 variable "aws_session_token" {
     description="aws_session_token"
     type=string
-    default="FwoGZXIvYXdzEAMaDMmYgHgLG/UGP/Vp6CLGAcF0Q7czWXqAWoqgzC4zKL1k4OCEm3YxwdNht5LslXYLwGDxjXoqg733ZJIm+wUVHjkbzwwOadB/4APH3pHMhGbweZkCXWpKQbIlHfzaA/qJMB3/nVYTnYu16l/VzDxjaHixYwFKY0gE0ZqkU6T5gLJ0n0+16bF4NiFJC1ffaVvZv/WRsRJQAVkiOmfhj2mfzkjGzZkWhZR0RBqZlBXfUe5+CRNuTbJzBD1kfq/7ng1Nw67m/rKEnFayiFlpB+HU1xjXIM9KyyiV0u6rBjItlVEZWsrs2hBvNO8DkqQ1fdneTb0Mf/lRK+KSUncBZbz9xUJjFul493BhRJ15"
+    default="FwoGZXIvYXdzEBMaDMSeVilO2CVjOIs+mCLGAcSVISIfuu/Ug38x/fXwzARNBLo+NP5tJZRcFXGeLOPtiHP/iUmyuifFVPFFNR7vefmY3STVLnqa54+o9YKgRfpLhRftsFRbEjjm5h6ZfOK6Nw6v0MjqDikQ4DzYYUF/9jkkE237HDtydLJLd/vAFtR0ZHOUSVmi3m4CXpurgv8J0U32mAp5/vqI1FBZR/HU9pc3pBGLXjuEPDT0gdoPbPfgoxqCXDsqwmFqHkQ6YvNWaaNM1+pyFVX/x/pQkVWKy+FIS74tmijcpvKrBjIt1JVp9qj/gFesnMOW2J0NBYCg/uJSW/BaQtFpZ5/XeIrKUtzZKEMR7RmUSrVF"
 }
 
 
