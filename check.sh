@@ -27,8 +27,6 @@ echo "[mysql_cluster]" | sudo tee -a /etc/mysql/my.cnf
 # "sudo vim my.cnf" enter file press key "s" then edit when finish press "esc" then type ":w" and "enter" then type ":q" and "enter"
 echo "ndb-connectstring=ip-${IP_ADDRESS//./-}-ec2.internal" | sudo tee -a /etc/mysql/my.cnf
 
-ndb_mgm --ndb-mgmd-host=${IP_ADDRESS}
-
 source /etc/mysql/my.cnf 
 
 sudo systemctl restart mysql
@@ -42,3 +40,4 @@ sudo mysql -e "CREATE USER 'admin'@'localhost' IDENTIFIED BY '123';"
 sudo mysql -e "GRANT ALL PRIVILEGES on sakila.* TO 'admin'@'localhost';"
 sysbench --db-driver=mysql --mysql-db=sakila --mysql-user=admin --mysql_password=123 --table-size=50000 --tables=10 /usr/share/sysbench/oltp_read_write.lua prepare
 sysbench --db-driver=mysql --mysql-db=sakila --mysql-user=admin --mysql_password=123 --table-size=50000 --tables=10 --threads=8 --max-time=20 /usr/share/sysbench/oltp_read_write.lua run | sudo tee -a mysql-cluster-results
+ndb_mgm --ndb-mgmd-host=${IP_ADDRESS}
