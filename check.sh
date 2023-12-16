@@ -26,6 +26,9 @@ echo "[mysql_cluster]" | sudo tee -a /etc/mysql/my.cnf
 
 # "sudo vim my.cnf" enter file press key "s" then edit when finish press "esc" then type ":w" and "enter" then type ":q" and "enter"
 echo "ndb-connectstring=ip-${IP_ADDRESS//./-}-ec2.internal" | sudo tee -a /etc/mysql/my.cnf
+
+ndb_mgm --ndb-mgmd-host=${IP_ADDRESS}
+
 source /etc/mysql/my.cnf 
 
 sudo systemctl restart mysql

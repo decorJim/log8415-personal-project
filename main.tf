@@ -36,6 +36,56 @@ resource "aws_security_group" "my_group_1" {
     cidr_blocks = var.http_cidr_blocks 
   }
 
+  # MySQL Cluster rules
+  ingress {
+    from_port   = 1186
+    to_port     = 1186
+    protocol    = "tcp"
+    cidr_blocks = var.mysql_cluster_cidr_blocks
+  }
+
+  ingress {
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = var.mysql_cluster_cidr_blocks
+  }
+
+  ingress {
+    from_port   = 3316
+    to_port     = 3316
+    protocol    = "tcp"
+    cidr_blocks = var.mysql_cluster_cidr_blocks
+  }
+
+  ingress {
+    from_port   = 8081
+    to_port     = 8081
+    protocol    = "tcp"
+    cidr_blocks = var.mysql_cluster_cidr_blocks
+  }
+
+  ingress {
+    from_port   = 11860
+    to_port     = 11860
+    protocol    = "tcp"
+    cidr_blocks = var.mysql_cluster_cidr_blocks
+  }
+
+  ingress {
+    from_port   = 33060
+    to_port     = 33060
+    protocol    = "tcp"
+    cidr_blocks = var.mysql_cluster_cidr_blocks
+  }
+
+    ingress {
+    from_port   = 1186
+    to_port     = 1186
+    protocol    = "tcp"
+    cidr_blocks = var.mysql_cluster_cidr_blocks
+  }
+
   # Outbound rule to allow all traffic
   egress {
     from_port   = 0

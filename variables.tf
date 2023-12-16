@@ -44,6 +44,12 @@ variable "http_cidr_blocks" {
     default=["0.0.0.0/0"] # anywhere
 }
 
+variable "mysql_cluster_cidr_blocks" {
+    description="allow http"
+    type=list(string)
+    default=["0.0.0.0/0"] # anywhere
+}
+
 variable "outbound_didr_blocks" {
     description="allows all"
     type=list(string)
