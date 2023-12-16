@@ -19,6 +19,8 @@
 # sources
 # MySQL
 - https://www.linode.com/docs/guides/install-mysql-on-ubuntu-14-04/
+- ndb_mgm 
+- SHOW
 
 # sakila
 - https://www.sqliz.com/sakila/installation/

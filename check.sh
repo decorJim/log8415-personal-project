@@ -19,14 +19,14 @@ sudo dpkg -i mysql-server_7.6.6-1ubuntu18.04_amd64.deb
 cd ..
 
 sudo mkdir -p /etc/mysql/
-sudo touch /etc/mysql/file.cnf
-echo "[mysqld]" | sudo tee -a /etc/mysql/file.cnf
-echo "ndbcluster" | sudo tee -a /etc/mysql/file.cnf
-echo "[mysql_cluster]" | sudo tee -a /etc/mysql/file.cnf
+sudo touch /etc/mysql/my.cnf
+echo "[mysqld]" | sudo tee -a /etc/mysql/my.cnf
+echo "ndbcluster" | sudo tee -a /etc/mysql/my.cnf
+echo "[mysql_cluster]" | sudo tee -a /etc/mysql/my.cnf
 
-# "sudo vim file.cnf" enter file press key "s" then edit when finish press "esc" then type ":w" and "enter" then type ":q" and "enter"
-echo "ndb-connectstring=ip-${IP_ADDRESS//./-}-ec2.internal" | sudo tee -a /etc/mysql/file.cnf
-source /etc/mysql/file.cnf 
+# "sudo vim my.cnf" enter file press key "s" then edit when finish press "esc" then type ":w" and "enter" then type ":q" and "enter"
+echo "ndb-connectstring=ip-${IP_ADDRESS//./-}-ec2.internal" | sudo tee -a /etc/mysql/my.cnf
+source /etc/mysql/my.cnf 
 
 sudo systemctl restart mysql
 sudo systemctl enable mysql

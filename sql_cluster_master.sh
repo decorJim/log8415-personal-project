@@ -106,6 +106,9 @@ def run_command():
      'systemctl daemon-reload',
      'systemctl enable ndb_mgmd',
      'systemctl start ndb_mgmd',
+     f'ufw allow from {ip2}',
+     f'ufw allow from {ip3}',
+     f'ufw allow from {ip4}',
      'touch status.ini',
      'systemctl status ndb_mgmd >> status.ini',
   ]
