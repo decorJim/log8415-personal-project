@@ -2,7 +2,7 @@ import argparse
 import requests
 
 """
-python3 sendToMaster.py --ipurl=ipdestinationmachine --ip1=10.0.0.2 --ip2=10.0.0.3 --ip3=10.0.0.4 
+python3 sendToMaster.py --ipurl=ipdestinationmachine --ip1=10.0.0.2 --ip2=10.0.0.3 --ip3=10.0.0.4 --ip4=10.0.0.5
 command for testing
 """
 

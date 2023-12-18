@@ -33,7 +33,7 @@ def run_command():
 
   os.chdir('/')
 
-  script = f'sudo bash /app/check.sh {ip1}'
+  script = f'sudo bash slave_setup.sh {ip1}'
   result = subprocess.run(script, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
   # Return the command output as the response

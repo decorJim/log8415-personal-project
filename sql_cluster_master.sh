@@ -50,12 +50,10 @@ def run_command():
   ip3 = request.form.get('ip3')
   ip4 = request.form.get('ip4')
 
-  ip_addresses = [ip1, ip2, ip3, ip4]
-
   os.chdir('/')
 
-  master_setup_command = ['bash master_setup.sh', *ip_addresses]
-  result = subprocess.run(master_setup_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+  script = f'sudo bash master_setup.sh {ip1} {ip2} {ip3} {ip4}'
+  result = subprocess.run(script, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
   # Return the command output as the response
   return result.stdout, 200
