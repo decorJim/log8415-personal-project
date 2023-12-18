@@ -61,4 +61,4 @@ cd /opt/mysqlcluster/home/mysqlc
 sudo scripts/mysql_install_db --no-defaults --datadir=/opt/mysqlcluster/deploy/mysqld_data
 sudo chown -R root:root /opt/mysqlcluster/home/mysqlc
 sudo /opt/mysqlcluster/home/mysqlc/bin/ndb_mgmd -f /opt/mysqlcluster/deploy/conf/config.ini --initial --configdir=/opt/mysqlcluster/deploy/conf/
-ndb_mgmd -e show
+ndb_mgm -e show

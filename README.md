@@ -25,6 +25,9 @@
 - https://stackoverflow.com/questions/43313528/data-nodes-cannot-connect-to-mysql-cluster 
 - sudo kill -9 <pid>
 - sudo systemctl stop ndb_mgmd
+- ndb_mgmd --initial --configdir=/opt/mysqlcluster/deploy/conf/ --ndb-nodeid=1
+- sudo ndb_mgmd --initial --configdir=/opt/mysqlcluster/home/mysqlc/bin/ndb_mgmd --ndb-nodeid=1
+- sudo /opt/mysqlcluster/home/mysqlc/bin/ndb_mgmd -f /opt/mysqlcluster/deploy/conf/config.ini --initial --configdir=/opt/mysqlcluster/deploy/conf/
 
 
 # sakila
