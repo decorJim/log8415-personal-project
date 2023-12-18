@@ -1,6 +1,6 @@
 #!/bin/bash
-if [ "$#" -ne 5 ]; then
-    echo "Usage: $0 <IP_ADDRESS_1> <IP_ADDRESS_2> <IP_ADDRESS_3> <IP_ADDRESS_4> <IP_ADDRESS_5>"
+if [ "$#" -ne 4 ]; then
+    echo "Usage: $0 <IP_ADDRESS_1> <IP_ADDRESS_2> <IP_ADDRESS_3> <IP_ADDRESS_4>"
     exit 1
 fi
 
@@ -8,7 +8,6 @@ IP_ADDRESS_1=$1
 IP_ADDRESS_2=$2
 IP_ADDRESS_3=$3
 IP_ADDRESS_4=$4
-IP_ADDRESS_5=$5
 
 echo "IP1: $IP_ADDRESS_1, IP2: $IP_ADDRESS_2, IP3: $IP_ADDRESS_3, IP4 $IP_ADDRESS_4" > clusterip.txt
 sudo apt update -y
