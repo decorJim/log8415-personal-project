@@ -38,6 +38,6 @@ sudo mysql -e "SOURCE /tmp/sakila-db/sakila-schema.sql;"
 sudo mysql -e "SOURCE /tmp/sakila-db/sakila-data.sql;"
 sudo mysql -e "CREATE USER 'admin'@'localhost' IDENTIFIED BY '123';"
 sudo mysql -e "GRANT ALL PRIVILEGES on sakila.* TO 'admin'@'localhost';"
-sysbench --db-driver=mysql --mysql-db=sakila --mysql-user=admin --mysql_password=123 --table-size=50000 --tables=10 /usr/share/sysbench/oltp_read_write.lua prepare
-sysbench --db-driver=mysql --mysql-db=sakila --mysql-user=admin --mysql_password=123 --table-size=50000 --tables=10 --threads=8 --max-time=20 /usr/share/sysbench/oltp_read_write.lua run | sudo tee -a mysql-cluster-results
-ndb_mgm --ndb-mgmd-host=${IP_ADDRESS}
+sysbench --db-driver=mysql --mysql-db=sakila --mysql-user=admin --mysql_password=123 --table-size=100000 --tables=10 /usr/share/sysbench/oltp_read_write.lua prepare
+sysbench --db-driver=mysql --mysql-db=sakila --mysql-user=admin --mysql_password=123 --table-size=100000 --tables=10 --threads=8 --max-time=20 /usr/share/sysbench/oltp_read_write.lua run | sudo tee -a mysql-cluster-results
+ndb_mgmd --ndb-mgmd-host=${IP_ADDRESS}

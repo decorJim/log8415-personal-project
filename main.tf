@@ -168,7 +168,7 @@ output "generated_key" {
 
 # master instance
 resource "aws_instance" "master_node" {
-#  depends_on=[null_resource.delay_mysql_standalone]
+  #depends_on=[null_resource.delay_mysql_standalone]
   ami = var.ami_id
   instance_type=var.instance_type
   vpc_security_group_ids=[aws_security_group.my_group_1.id]
@@ -184,12 +184,16 @@ resource "aws_instance" "master_node" {
     volume_size=var.volume_size
   }
 
+  tags = {
+    Name = "master"
+  }
+
   availability_zone=var.availability_zone
 }
 
 # slave nodes
 resource "aws_instance" "slaves_node" {
-#  depends_on=[null_resource.delay_mysql_standalone]
+  depends_on=[aws_instance.master_node]
   ami = var.ami_id
   instance_type=var.instance_type
   vpc_security_group_ids=[aws_security_group.my_group_1.id]
@@ -203,6 +207,10 @@ resource "aws_instance" "slaves_node" {
   root_block_device {
     volume_type=var.volume_type
     volume_size=var.volume_size
+  }
+
+  tags = {
+    Name = "slave-${count.index + 1}"
   }
   
   availability_zone=var.availability_zone

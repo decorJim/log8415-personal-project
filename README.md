@@ -19,9 +19,13 @@
 # sources
 # MySQL
 - https://www.linode.com/docs/guides/install-mysql-on-ubuntu-14-04/
-- ndb_mgm 
+- ndb_mgmd 
 - SHOW
+- all report memoryusage
 - https://stackoverflow.com/questions/43313528/data-nodes-cannot-connect-to-mysql-cluster 
+- sudo kill -9 <pid>
+- sudo systemctl stop ndb_mgmd
+
 
 # sakila
 - https://www.sqliz.com/sakila/installation/
