@@ -21,4 +21,4 @@ source /etc/profile.d/mysqlc.sh
 sudo apt-get update && sudo apt-get -y install libncurses5
 sudo mkdir -p /opt/mysqlcluster/deploy/ndb_data
 sudo ndbd -c ip-${IP_ADDRESS//./-}.ec2.internal:1186
-ndb_mgm -e show
+ndb_mgmd -e show

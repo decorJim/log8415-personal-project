@@ -51,7 +51,7 @@ echo "hostname=ip-${IP_ADDRESS_3//./-}.ec2.internal" | sudo tee -a /opt/mysqlclu
 echo "nodeid=3" | sudo tee -a /opt/mysqlcluster/deploy/conf/config.ini
 
 echo "[ndbd]" | sudo tee -a /opt/mysqlcluster/deploy/conf/config.ini
-echo "hostname=ip-${IP_ADDRESS_3//./-}.ec2.internal" | sudo tee -a /opt/mysqlcluster/deploy/conf/config.ini
+echo "hostname=ip-${IP_ADDRESS_4//./-}.ec2.internal" | sudo tee -a /opt/mysqlcluster/deploy/conf/config.ini
 echo "nodeid=4" | sudo tee -a /opt/mysqlcluster/deploy/conf/config.ini
 
 echo "[mysqld]" | sudo tee -a /opt/mysqlcluster/deploy/conf/config.ini
@@ -61,4 +61,4 @@ cd /opt/mysqlcluster/home/mysqlc
 sudo scripts/mysql_install_db --no-defaults --datadir=/opt/mysqlcluster/deploy/mysqld_data
 sudo chown -R root:root /opt/mysqlcluster/home/mysqlc
 sudo /opt/mysqlcluster/home/mysqlc/bin/ndb_mgmd -f /opt/mysqlcluster/deploy/conf/config.ini --initial --configdir=/opt/mysqlcluster/deploy/conf/
-ndb_mgm -e show
+ndb_mgmd -e show
