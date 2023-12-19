@@ -20,5 +20,5 @@ echo "export PATH=$MYSQLC_HOME/bin:$PATH" | sudo tee -a /etc/profile.d/mysqlc.sh
 source /etc/profile.d/mysqlc.sh
 sudo apt-get update && sudo apt-get -y install libncurses5
 sudo mkdir -p /opt/mysqlcluster/deploy/ndb_data
-sudo ndbd -c ip-${IP_ADDRESS//./-}.ec2.internal:1186
+sudo ndbd -c "ip-${IP_ADDRESS//./-}.ec2.internal:1186"
 ndb_mgm -e show
