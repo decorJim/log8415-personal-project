@@ -27,8 +27,8 @@ sudo mkdir -p /opt/mysqlcluster/deploy/mysqld_data
 sudo mkdir -p /opt/mysqlcluster/deploy/ndb_data
      
 sudo touch /opt/mysqlcluster/deploy/conf/my.cnf
-echo "[mysqld]" | sudo tee /opt/mysqlcluster/deploy/conf/my.cnf
-echo "ndbcluster" | sudo tee /opt/mysqlcluster/deploy/conf/my.cnf
+echo "[mysqld]" | sudo tee -a /opt/mysqlcluster/deploy/conf/my.cnf
+echo "ndbcluster" | sudo tee -a /opt/mysqlcluster/deploy/conf/my.cnf
 echo "datadir=/opt/mysqlcluster/deploy/mysqld_data" | sudo tee -a /opt/mysqlcluster/deploy/conf/my.cnf
 echo "basedir=/opt/mysqlcluster/home/mysqlc" | sudo tee -a /opt/mysqlcluster/deploy/conf/my.cnf
 echo "port=3306" | sudo tee -a /opt/mysqlcluster/deploy/conf/my.cnf
