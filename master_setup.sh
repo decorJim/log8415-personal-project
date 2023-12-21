@@ -57,11 +57,21 @@ echo "nodeid=4" | sudo tee -a /opt/mysqlcluster/deploy/conf/config.ini
 echo "[mysqld]" | sudo tee -a /opt/mysqlcluster/deploy/conf/config.ini
 echo "nodeid=50" | sudo tee -a /opt/mysqlcluster/deploy/conf/config.ini
 
-cd /opt/mysqlcluster/home/mysqlc
-sudo scripts/mysql_install_db --no-defaults --datadir=/opt/mysqlcluster/deploy/mysqld_data
-sudo chown -R root:root /opt/mysqlcluster/home/mysqlc
 sudo /opt/mysqlcluster/home/mysqlc/bin/ndb_mgmd -f /opt/mysqlcluster/deploy/conf/config.ini --initial --configdir=/opt/mysqlcluster/deploy/conf/
+
 ndb_mgm -e show
+
+sleep 10
+
+sudo wget https://downloads.mysql.com/docs/sakila-db.zip
+sudo unzip sakila-db.zip 
+sudo mysql -u root -e  "SOURCE /sakila-db/sakila-schema.sql"
+sudo mysql -u root -e  "SOURCE /sakila-db/sakila-data.sql"
+sudo mysql -u root -e "GRANT ALL PRIVILEGES ON sakila.* TO 'root'@'%' IDENTIFIED BY '' WITH GRANT OPTION;"
+sudo mysql -u root -e "FLUSH PRIVILEGES"
+sudo sysbench /usr/share/sysbench/oltp_read_write.lua prepare --db-driver=mysql --mysql-host=ip-${IP_ADDRESS_1//./-}.ec2.internal --mysql-db=sakila --mysql-user=root --mysql-password --table-size=1000000
+sudo sysbench /usr/share/sysbench/oltp_read_write.lua run --db-driver=mysql --mysql-host=ip-${IP_ADDRESS_1//./-}.ec2.internal --mysql-db=sakila --mysql-user=root --mysql-password --table-size=1000000 --threads=6 --time=60 --events=0
+sudo sysbench /usr/share/sysbench/oltp_read_write.lua cleanup --db-driver=mysql --mysql-host=ip-${IP_ADDRESS_1//./-}.ec2.internal --mysql-db=sakila --mysql-user=root --mysql-password
 
 
 
