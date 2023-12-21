@@ -35,6 +35,7 @@ ndbcluster
 datadir=/opt/mysqlcluster/deploy/mysqld_data
 basedir=/opt/mysqlcluster/home/mysqlc
 port=3306
+bind-address=0.0.0.0
 EOF
 
 # Create and configure the config.ini file
@@ -68,4 +69,3 @@ sudo ufw allow 1186
 sudo /opt/mysqlcluster/home/mysqlc/bin/ndb_mgmd -f /opt/mysqlcluster/deploy/conf/config.ini --initial --configdir=/opt/mysqlcluster/deploy/conf/
 
 ndb_mgm -e show
-
