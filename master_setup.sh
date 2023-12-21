@@ -60,8 +60,12 @@ echo "nodeid=50" | sudo tee -a /opt/mysqlcluster/deploy/conf/config.ini
 sudo /opt/mysqlcluster/home/mysqlc/bin/ndb_mgmd -f /opt/mysqlcluster/deploy/conf/config.ini --initial --configdir=/opt/mysqlcluster/deploy/conf/
 
 ndb_mgm -e show
+ufw allow from $IP_ADDRESS_2
+ufw allow from $IP_ADDRESS_3
+ufw allow from $IP_ADDRESS_4
 
 sleep 10
+
 
 sudo wget https://downloads.mysql.com/docs/sakila-db.zip
 sudo unzip sakila-db.zip 
