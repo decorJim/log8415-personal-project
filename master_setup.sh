@@ -73,3 +73,4 @@ sudo scripts/mysql_install_db –no-defaults –datadir=/opt/mysqlcluster/deploy
 sudo chown -R ubuntu:ubuntu /opt/mysqlcluster/home/mysqlc
 sudo /opt/mysqlcluster/home/mysqlc/bin/ndb_mgmd -f /opt/mysqlcluster/deploy/conf/config.ini --initial --configdir=/opt/mysqlcluster/deploy/conf/
 
+ndb_mgm
