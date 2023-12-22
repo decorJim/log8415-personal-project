@@ -57,7 +57,17 @@ nodeid=3
 hostname=${IP_ADDRESS_4}
 nodeid=4
 [mysqld]
+hostname=${IP_ADDRESS_1}
 nodeid=50
+[mysqld]
+hostname=${IP_ADDRESS_2}
+nodeid=51
+[mysqld]
+hostname=${IP_ADDRESS_3}
+nodeid=52
+[mysqld]
+hostname=${IP_ADDRESS_4}
+nodeid=53
 EOF
 
 sudo ufw allow from $IP_ADDRESS_2
