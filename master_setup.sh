@@ -1,5 +1,4 @@
 #!/bin/bash
-
 exec > /var/log/cluster.log 2>&1
 
 if [ "$#" -ne 4 ]; then
@@ -26,46 +25,40 @@ echo "export MYSQLC_HOME=/opt/mysqlcluster/home/mysqlc" | sudo tee -a /etc/profi
 source /etc/profile.d/mysqlc.sh
 echo "export PATH=$MYSQLC_HOME/bin:$PATH" | sudo tee -a /etc/profile.d/mysqlc.sh
 source /etc/profile.d/mysqlc.sh
-
 sudo apt-get update && sudo apt-get -y install libncurses5
+cd /
 
 # Create directories for MySQL Cluster deployment
 sudo mkdir -p /opt/mysqlcluster/deploy /opt/mysqlcluster/deploy/conf /opt/mysqlcluster/deploy/mysqld_data /opt/mysqlcluster/deploy/ndb_data
 
 # Create and configure the my.cnf file
-sudo cp /etc/mysql/my.cnf /etc/mysql/my.cnf.backup
-sudo tee /etc/mysql/my.cnf > /dev/null <<EOF
+sudo tee /opt/mysqlcluster/deploy/conf/my.cnf > /dev/null <<EOF
 [mysqld]
 ndbcluster
 datadir=/opt/mysqlcluster/deploy/mysqld_data
 basedir=/opt/mysqlcluster/home/mysqlc
 port=3306
-bind-address=0.0.0.0
-socket=/tmp/mysql.sock
-[client]
-socket=/tmp/mysql.sock
 EOF
 
 # Create and configure the config.ini file
 sudo tee /opt/mysqlcluster/deploy/conf/config.ini > /dev/null <<EOF
 [ndb_mgmd]
-hostname=${IP_ADDRESS_1}
+hostname=ip-${IP_ADDRESS_1//./-}.ec2.internal
 datadir=/opt/mysqlcluster/deploy/ndb_data
 nodeid=1
 [ndbd default]
 noofreplicas=3
 datadir=/opt/mysqlcluster/deploy/ndb_data
 [ndbd]
-hostname=${IP_ADDRESS_2}
+hostname=${IP_ADDRESS_2//./-}.ec2.internal
 nodeid=2
 [ndbd]
-hostname=${IP_ADDRESS_3}
+hostname=${IP_ADDRESS_3//./-}.ec2.internal
 nodeid=3
 [ndbd]
-hostname=${IP_ADDRESS_4}
+hostname=${IP_ADDRESS_4//./-}.ec2.internal
 nodeid=4
 [mysqld]
-hostname=${IP_ADDRESS_1}
 nodeid=50
 EOF
 
@@ -76,7 +69,5 @@ sudo ufw allow 3306
 sudo ufw allow 1186
 
 cd /opt/mysqlcluster/home/mysqlc/bin/
-
-sudo /opt/mysqlcluster/home/mysqlc/bin/ndb_mgmd -f /opt/mysqlcluster/deploy/conf/config.ini --initial --configdir=/opt/mysqlcluster/deploy/conf/
-
-ndb_mgm -e show
+sudo scripts/mysql_install_db –no-defaults –datadir=/opt/mysqlcluster/deploy/mysqld_data
+ndb_mgmd -f /opt/mysqlcluster/deploy/conf/config.ini –initial –configdir=/opt/mysqlcluster/deploy/conf
