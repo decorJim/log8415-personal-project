@@ -68,6 +68,6 @@ sudo ufw allow from $IP_ADDRESS_4
 sudo ufw allow 3306
 sudo ufw allow 1186
 
-cd /opt/mysqlcluster/home/mysqlc/bin/
+cd /opt/mysqlcluster/home/mysqlc
 sudo scripts/mysql_install_db –no-defaults –datadir=/opt/mysqlcluster/deploy/mysqld_data
 ndb_mgmd -f /opt/mysqlcluster/deploy/conf/config.ini –initial –configdir=/opt/mysqlcluster/deploy/conf
