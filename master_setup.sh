@@ -50,13 +50,13 @@ nodeid=1
 noofreplicas=3
 datadir=/opt/mysqlcluster/deploy/ndb_data
 [ndbd]
-hostname=${IP_ADDRESS_2//./-}.ec2.internal
+hostname=ip-${IP_ADDRESS_2//./-}.ec2.internal
 nodeid=2
 [ndbd]
-hostname=${IP_ADDRESS_3//./-}.ec2.internal
+hostname=ip-${IP_ADDRESS_3//./-}.ec2.internal
 nodeid=3
 [ndbd]
-hostname=${IP_ADDRESS_4//./-}.ec2.internal
+hostname=ip-${IP_ADDRESS_4//./-}.ec2.internal
 nodeid=4
 [mysqld]
 nodeid=50
@@ -70,4 +70,6 @@ sudo ufw allow 1186
 
 cd /opt/mysqlcluster/home/mysqlc
 sudo scripts/mysql_install_db –no-defaults –datadir=/opt/mysqlcluster/deploy/mysqld_data
-ndb_mgmd -f /opt/mysqlcluster/deploy/conf/config.ini –initial –configdir=/opt/mysqlcluster/deploy/conf
+sudo chown -R ubuntu:ubuntu /opt/mysqlcluster/home/mysqlc
+sudo /opt/mysqlcluster/home/mysqlc/bin/ndb_mgmd -f /opt/mysqlcluster/deploy/conf/config.ini --initial --configdir=/opt/mysqlcluster/deploy/conf/
+
