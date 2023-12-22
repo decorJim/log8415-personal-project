@@ -27,6 +27,8 @@ source /etc/profile.d/mysqlc.sh
 echo "export PATH=$MYSQLC_HOME/bin:$PATH" | sudo tee -a /etc/profile.d/mysqlc.sh
 source /etc/profile.d/mysqlc.sh
 
+sudo apt-get update && sudo apt-get -y install libncurses5
+
 # Create directories for MySQL Cluster deployment
 sudo mkdir -p /opt/mysqlcluster/deploy /opt/mysqlcluster/deploy/conf /opt/mysqlcluster/deploy/mysqld_data /opt/mysqlcluster/deploy/ndb_data
 
@@ -72,6 +74,8 @@ sudo ufw allow from $IP_ADDRESS_3
 sudo ufw allow from $IP_ADDRESS_4
 sudo ufw allow 3306
 sudo ufw allow 1186
+
+cd /opt/mysqlcluster/home/mysqlc/bin/
 
 sudo /opt/mysqlcluster/home/mysqlc/bin/ndb_mgmd -f /opt/mysqlcluster/deploy/conf/config.ini --initial --configdir=/opt/mysqlcluster/deploy/conf/
 
