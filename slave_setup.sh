@@ -28,8 +28,6 @@ sudo ufw allow $IP_ADDRESS
 sudo ufw allow 3306
 sudo ufw allow 1186
 
-ndbd -c "ip-${IP_ADDRESS//./-}.ec2.internal:1186"
-
 MYSQL_CNF="/etc/mysql/conf.d/cluster.cnf"
 sudo touch $MYSQL_CNF
 echo "[mysqld]" | sudo tee -a $MYSQL_CNF
@@ -38,7 +36,8 @@ echo "datadir=/opt/mysqlcluster/deploy/mysqld_data" | sudo tee -a $MYSQL_CNF
 echo "basedir=/opt/mysqlcluster/home/mysqlc" | sudo tee -a $MYSQL_CNF
 echo "port=3306" | sudo tee -a $MYSQL_CNF
 
-
 sudo systemctl restart mysql || sudo service mysql restart
+
+ndbd -c "ip-${IP_ADDRESS//./-}.ec2.internal:1186"
 
 ndb_mgm -e show
