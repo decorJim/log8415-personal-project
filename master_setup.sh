@@ -1,4 +1,7 @@
 #!/bin/bash
+
+exec > /var/log/cluster.log 2>&1
+
 if [ "$#" -ne 4 ]; then
     echo "Usage: $0 <IP_ADDRESS_1> <IP_ADDRESS_2> <IP_ADDRESS_3> <IP_ADDRESS_4>"
     exit 1
