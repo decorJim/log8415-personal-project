@@ -39,6 +39,9 @@ datadir=/opt/mysqlcluster/deploy/mysqld_data
 basedir=/opt/mysqlcluster/home/mysqlc
 port=3306
 bind-address=0.0.0.0
+socket=/tmp/mysql.sock
+[client]
+socket=/tmp/mysql.sock
 EOF
 
 # Create and configure the config.ini file

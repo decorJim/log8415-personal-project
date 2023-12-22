@@ -35,6 +35,7 @@ echo "ndbcluster" | sudo tee -a $MYSQL_CNF
 echo "datadir=/opt/mysqlcluster/deploy/mysqld_data" | sudo tee -a $MYSQL_CNF
 echo "basedir=/opt/mysqlcluster/home/mysqlc" | sudo tee -a $MYSQL_CNF
 echo "port=3306" | sudo tee -a $MYSQL_CNF
+echo "socket=/tmp/mysql.sock" | sudo tee -a $MYSQL_CNF
 
 sudo systemctl restart mysql || sudo service mysql restart
 
