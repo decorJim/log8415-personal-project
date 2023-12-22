@@ -24,6 +24,9 @@ source /etc/profile.d/mysqlc.sh
 sudo mkdir -p /opt/mysqlcluster/deploy/ndb_data
 sudo chmod -R 777 /opt/mysqlcluster/deploy/ndb_data/
 
+sudo ufw allow $IP_ADDRESS
+sudo ufw allow 3306
+sudo ufw allow 1186
 
 ndbd -c "ip-${IP_ADDRESS//./-}.ec2.internal:1186"
 
@@ -34,6 +37,7 @@ echo "ndbcluster" | sudo tee -a $MYSQL_CNF
 echo "datadir=/opt/mysqlcluster/deploy/mysqld_data" | sudo tee -a $MYSQL_CNF
 echo "basedir=/opt/mysqlcluster/home/mysqlc" | sudo tee -a $MYSQL_CNF
 echo "port=3306" | sudo tee -a $MYSQL_CNF
+
 
 sudo systemctl restart mysql || sudo service mysql restart
 
