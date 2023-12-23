@@ -18,18 +18,27 @@ sudo apt-get install -y sysbench unzip expect libncurses5
 
 sudo mkdir -p /opt/mysqlcluster/home
 cd /opt/mysqlcluster/home
+
 sudo wget -O mysql-cluster-gpl-7.2.1-linux2.6-x86_64.tar.gz http://dev.mysql.com/get/Downloads/MySQL-Cluster-7.2/mysql-cluster-gpl-7.2.1-linux2.6-x86_64.tar.gz
 sudo tar xzf mysql-cluster-gpl-7.2.1-linux2.6-x86_64.tar.gz
 sudo ln -s mysql-cluster-gpl-7.2.1-linux2.6-x86_64 mysqlc
+
 echo "export MYSQLC_HOME=/opt/mysqlcluster/home/mysqlc" | sudo tee -a /etc/profile.d/mysqlc.sh
 source /etc/profile.d/mysqlc.sh
 echo "export PATH=$MYSQLC_HOME/bin:$PATH" | sudo tee -a /etc/profile.d/mysqlc.sh
 source /etc/profile.d/mysqlc.sh
 sudo apt-get update && sudo apt-get -y install libncurses5
-cd /
 
 # Create directories for MySQL Cluster deployment
-sudo mkdir -p /opt/mysqlcluster/deploy /opt/mysqlcluster/deploy/conf /opt/mysqlcluster/deploy/mysqld_data /opt/mysqlcluster/deploy/ndb_data
+sudo mkdir -p /opt/mysqlcluster/deploy
+sudo mkdir -p /opt/mysqlcluster/home/mysqlc
+
+cd /opt/mysqlcluster/deploy
+
+sudo mkdir -p conf
+sudo mkdir -p mysqld_data
+sudo mkdir -p ndb_data
+sudo chmod +w ./conf
 
 # Create and configure the my.cnf file
 sudo tee /opt/mysqlcluster/deploy/conf/my.cnf > /dev/null <<EOF
@@ -62,20 +71,13 @@ nodeid=4
 nodeid=50
 EOF
 
-sudo ufw allow from $IP_ADDRESS_2
-sudo ufw allow from $IP_ADDRESS_3
-sudo ufw allow from $IP_ADDRESS_4
-sudo ufw allow 3306
-sudo ufw allow 1186
-
 cd /opt/mysqlcluster/home/mysqlc
-sudo scripts/mysql_install_db --datadir=/opt/mysqlcluster/deploy/mysqld_data
-
-sudo groupadd mysql
-sudo useradd -r -g mysql -s /bin/false mysql
-sudo chown -R mysql:mysql /opt/mysqlcluster/deploy/ndb_data
-sudo chmod -R 755 /opt/mysqlcluster/deploy/ndb_data
-
+sudo scripts/mysql_install_db --no-defaults --datadir=/opt/mysqlcluster/deploy/mysqld_data
+sudo chown -R root /opt/mysqlcluster/home/mysqlc
 sudo /opt/mysqlcluster/home/mysqlc/bin/ndb_mgmd -f /opt/mysqlcluster/deploy/conf/config.ini --initial --configdir=/opt/mysqlcluster/deploy/conf/
 
-ndb_mgm
+ndb_mgm -e show
+
+while ! mysqladmin ping --silent; do
+    sleep 1
+done
