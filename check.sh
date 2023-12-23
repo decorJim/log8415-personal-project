@@ -7,8 +7,6 @@ fi
 IP_ADDRESS=$1
 
 
-cd /
-
 sudo wget http://downloads.mysql.com/docs/sakila-db.zip
 unzip sakila-db.zip -d /tmp
 
