@@ -69,8 +69,13 @@ sudo ufw allow 3306
 sudo ufw allow 1186
 
 cd /opt/mysqlcluster/home/mysqlc
-sudo scripts/mysql_install_db –no-defaults –datadir=/opt/mysqlcluster/deploy/mysqld_data
-sudo chown -R ubuntu:ubuntu /opt/mysqlcluster/home/mysqlc
+sudo scripts/mysql_install_db --datadir=/opt/mysqlcluster/deploy/mysqld_data
+
+sudo groupadd mysql
+sudo useradd -r -g mysql -s /bin/false mysql
+sudo chown -R mysql:mysql /opt/mysqlcluster/deploy/ndb_data
+sudo chmod -R 755 /opt/mysqlcluster/deploy/ndb_data
+
 sudo /opt/mysqlcluster/home/mysqlc/bin/ndb_mgmd -f /opt/mysqlcluster/deploy/conf/config.ini --initial --configdir=/opt/mysqlcluster/deploy/conf/
 
 ndb_mgm

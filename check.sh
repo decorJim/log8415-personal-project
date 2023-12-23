@@ -6,7 +6,8 @@ fi
 
 IP_ADDRESS=$1
 
-sudo /opt/mysqlcluster/home/mysqlc/bin/mysqld --defaults-file=/opt/mysqlcluster/deploy/conf/my.cnf --user=root &
+
+cd /
 
 sudo wget http://downloads.mysql.com/docs/sakila-db.zip
 unzip sakila-db.zip -d /tmp
