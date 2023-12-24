@@ -197,6 +197,7 @@ resource "aws_instance" "master_node" {
 
 # slave nodes
 resource "aws_instance" "slaves_node" {
+  depends_on=[aws_instance.master_node]
   ami = var.ami_id
   instance_type=var.instance_type
   vpc_security_group_ids=[aws_security_group.my_group_1.id]

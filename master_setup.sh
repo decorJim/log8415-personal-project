@@ -78,7 +78,5 @@ sudo /opt/mysqlcluster/home/mysqlc/bin/ndb_mgmd -f /opt/mysqlcluster/deploy/conf
 
 ndb_mgm -e show
 
-while ! mysqladmin ping --silent; do
-    sleep 1
-done
+
 
