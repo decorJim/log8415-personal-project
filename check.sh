@@ -6,20 +6,20 @@ fi
 
 IP_ADDRESS=$1
 
+sudo wget https://downloads.mysql.com/docs/sakila-db.zip
+sudo unzip sakila-db.zip
+cd sakila-db
 
-sudo wget http://downloads.mysql.com/docs/sakila-db.zip
-unzip sakila-db.zip -d /tmp
+mysql -u root -e "SOURCE sakila-schema.sql;"
+mysql -u root -e "SOURCE sakila-data.sql;"
 
-mysql -u root -e  "SOURCE /tmp/sakila-db/sakila-schema.sql"
-mysql -u root -e  "SOURCE /tmp/sakila-db/sakila-data.sql"
+mysql -u root -e "USE sakila; SHOW FULL TABLES;"
+mysql -u root -e "USE sakila; SELECT COUNT(*) FROM film;"
 
-sudo mysql -e "CREATE USER 'root'@'localhost' IDENTIFIED BY '123';"
-sudo mysql -e "GRANT ALL PRIVILEGES on sakila.* TO 'root'@'localhost';"
-
+mysql -u root -e "GRANT ALL PRIVILEGES ON sakila.* TO 'root'@'%' IDENTIFIED BY '' WITH GRANT OPTION;"
 mysql -u root -e "FLUSH PRIVILEGES"
 
-sudo sysbench /usr/share/sysbench/oltp_read_write.lua prepare --db-driver=mysql --mysql-host=localhost --mysql-db=sakila --mysql-user=root --mysql-password=123 --table-size=1000000 
-sudo sysbench /usr/share/sysbench/oltp_read_write.lua run --db-driver=mysql --mysql-host=localhost --mysql-db=sakila --mysql-user=root --mysql-password=123 --table-size=1000000 --threads=8 --time=20 --events=0 | sudo tee -a mysql-cluster-results
-
-ndb_mgm
+sudo sysbench /usr/share/sysbench/oltp_read_write.lua prepare --db-driver=mysql --mysql-host=ip-${IP_ADDRESS//./-}.ec2.internal --mysql-db=sakila --mysql-user=root --mysql-password --table-size=50000 
+sudo sysbench /usr/share/sysbench/oltp_read_write.lua run --db-driver=mysql --mysql-host=ip-${IP_ADDRESS//./-}.ec2.internal --mysql-db=sakila --mysql-user=root --mysql-password --table-size=50000 --threads=8 --time=20 --events=0 
+sudo sysbench /usr/share/sysbench/oltp_read_write.lua cleanup --db-driver=mysql --mysql-host=ip-${IP_ADDRESS//./-}.ec2.internal --mysql-db=sakila --mysql-user=root --mysql-password 
 

@@ -5,16 +5,16 @@
 - set path for terraform executable
 
 # instructions to run code
-- go to file variables.tf 
-- change "aws_access_key_id.default", "aws_secret_access_key.default" and "aws_session_token.default" to the one found in your CLI details
-- enter command "terraform init"
-- enter command "terraform apply"
-- when step of cluster installation finishes
-- log into the master ec2 instance
-- copy the privateIp of the machine written below
-- go to "/" then to "/app"
-- enter command "bash check.sh privateIp"
-- wait for results
+- run terraform once
+- copy ip for standalone and paste it in main.tf in standalone resource
+- copy ip for master and paste it in main.tf in master resource and in master_setup.sh and in slave_setup.sh
+- copy ip for slave1 and paste it in main.tf in slave1 resource and in master_setup.sh
+- copy ip for slave2 and paste it in main.tf in slave2 resource and in master_setup.sh
+- copy ip for slave3 and paste it in main.tf in slave3 resource and in master_setup.sh
+- type in command "terraform destroy"
+- rerun terraform init
+- rerun terraform apply
+
 
 # sources
 # MySQL
