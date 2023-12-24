@@ -81,3 +81,4 @@ ndb_mgm -e show
 while ! mysqladmin ping --silent; do
     sleep 1
 done
+

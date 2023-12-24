@@ -124,51 +124,55 @@ output "generated_key" {
 
 
 
-# # instance for mysql standalone
-# resource "aws_instance" "mysql_standalone" {
-#   ami = var.ami_id
-#   instance_type=var.instance_type
-#   vpc_security_group_ids=[aws_security_group.my_group_1.id]
-#   key_name=aws_key_pair.generated_key.key_name
-#   # script for standalone setup
-#   user_data = file("${path.module}/sql_standalone.sh")
+# instance for mysql standalone
+resource "aws_instance" "mysql_standalone" {
+  ami = var.ami_id
+  instance_type=var.instance_type
+  vpc_security_group_ids=[aws_security_group.my_group_1.id]
+  key_name=aws_key_pair.generated_key.key_name
+  # script for standalone setup
+  user_data = file("${path.module}/sql_standalone.sh")
      
-#   lifecycle {
-#     create_before_destroy=true
-#   }
+  lifecycle {
+    create_before_destroy=true
+  }
 
-#   root_block_device {
-#     volume_type=var.volume_type
-#     volume_size=var.volume_size
-#   }
+  root_block_device {
+    volume_type=var.volume_type
+    volume_size=var.volume_size
+  }
+
+  tags = {
+    Name = "standalone"
+  }
   
-#   availability_zone=var.availability_zone
+  availability_zone=var.availability_zone
 
-# }
+}
 
-# resource "null_resource" "delay_mysql_standalone" {
-#   depends_on=[aws_instance.mysql_standalone]
-#   provisioner "local-exec" {
-#     command = "sleep 186"  # 3.10 min
-#   }
-# }
+resource "null_resource" "delay_mysql_standalone" {
+  depends_on=[aws_instance.mysql_standalone]
+  provisioner "local-exec" {
+    command = "sleep 186"  # 3.10 min
+  }
+}
 
 
-# output "instance_id" {
-#   depends_on=[null_resource.delay_mysql_standalone]
-#   value=aws_instance.mysql_standalone.id
-# }
+output "instance_id" {
+  depends_on=[null_resource.delay_mysql_standalone]
+  value=aws_instance.mysql_standalone.id
+}
 
-# output "mysql_standalone_details" {
-#   depends_on=[null_resource.delay_mysql_standalone]
-#   value = aws_instance.mysql_standalone
-# }
+output "mysql_standalone_details" {
+  depends_on=[null_resource.delay_mysql_standalone]
+  value = aws_instance.mysql_standalone
+}
 
 ############################################ mySQL cluster #################################################
 
 # master instance
 resource "aws_instance" "master_node" {
-  #depends_on=[null_resource.delay_mysql_standalone]
+  depends_on=[null_resource.delay_mysql_standalone]
   ami = var.ami_id
   instance_type=var.instance_type
   vpc_security_group_ids=[aws_security_group.my_group_1.id]
@@ -193,7 +197,6 @@ resource "aws_instance" "master_node" {
 
 # slave nodes
 resource "aws_instance" "slaves_node" {
-  depends_on=[aws_instance.master_node]
   ami = var.ami_id
   instance_type=var.instance_type
   vpc_security_group_ids=[aws_security_group.my_group_1.id]
@@ -210,7 +213,7 @@ resource "aws_instance" "slaves_node" {
   }
 
   tags = {
-    Name = "slave-${count.index + 1}"
+    Name = "slave${count.index + 1}"
   }
   
   availability_zone=var.availability_zone
