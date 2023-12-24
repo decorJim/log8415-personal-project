@@ -9,7 +9,7 @@ IP_ADDRESS=$1
 sudo apt-get update -y
 sudo apt-get install -y sysbench libncurses5
 
-mkdir -p /opt/mysqlcluster/home
+sudo mkdir -p /opt/mysqlcluster/home
 cd /opt/mysqlcluster/home
 sudo wget http://dev.mysql.com/get/Downloads/MySQL-Cluster-7.2/mysql-cluster-gpl-7.2.1-linux2.6-x86_64.tar.gz
 sudo tar xvf mysql-cluster-gpl-7.2.1-linux2.6-x86_64.tar.gz
@@ -21,7 +21,7 @@ echo "export PATH=$MYSQLC_HOME/bin:$PATH" | sudo tee -a /etc/profile.d/mysqlc.sh
 source /etc/profile.d/mysqlc.sh
 sudo apt-get update && sudo apt-get -y install libncurses5
 
-mkdir -p /opt/mysqlcluster/deploy/ndb_data
+sudo mkdir -p /opt/mysqlcluster/deploy/ndb_data
 
 ndbd -c "ip-${IP_ADDRESS//./-}.ec2.internal:1186"
 ndb_mgm -e show
