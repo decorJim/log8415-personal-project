@@ -112,10 +112,12 @@ resource "aws_instance" "master_node" {
   vpc_security_group_ids=[aws_security_group.my_group_1.id]
   key_name=aws_key_pair.generated_key.key_name
   # script for master
-  user_data = file("${path.module}/sql_cluster_master.sh")
+  user_data = file("${path.module}/master_setup.sh")
   lifecycle {
     create_before_destroy=true
   }
+
+  private_ip="172.31.20.182"
 
   root_block_device {
     volume_type=var.volume_type
@@ -135,10 +137,12 @@ resource "aws_instance" "slave1" {
   instance_type=var.instance_type
   vpc_security_group_ids=[aws_security_group.my_group_1.id]
   key_name=aws_key_pair.generated_key.key_name
-  user_data = file("${path.module}/sql_cluster_slave.sh")
+  user_data = file("${path.module}/slave_setup.sh")
   lifecycle {
     create_before_destroy=true
   }
+
+  private_ip="172.31.17.145"
 
   root_block_device {
     volume_type=var.volume_type
@@ -158,10 +162,12 @@ resource "aws_instance" "slave2" {
   instance_type=var.instance_type
   vpc_security_group_ids=[aws_security_group.my_group_1.id]
   key_name=aws_key_pair.generated_key.key_name
-  user_data = file("${path.module}/sql_cluster_slave.sh")
+  user_data = file("${path.module}/slave_setup.sh")
   lifecycle {
     create_before_destroy=true
   }
+
+  private_ip="172.31.22.69"
 
   root_block_device {
     volume_type=var.volume_type
@@ -181,10 +187,12 @@ resource "aws_instance" "slave3" {
   instance_type=var.instance_type
   vpc_security_group_ids=[aws_security_group.my_group_1.id]
   key_name=aws_key_pair.generated_key.key_name
-  user_data = file("${path.module}/sql_cluster_slave.sh")
+  user_data = file("${path.module}/slave_setup.sh")
   lifecycle {
     create_before_destroy=true
   }
+
+  private_ip="172.31.18.246"
 
   root_block_device {
     volume_type=var.volume_type
@@ -205,54 +213,6 @@ output "master_ip" {
   depends_on=[aws_instance.master_node]
   value=aws_instance.master_node.public_ip
 }
-
-resource "null_resource" "master_instance_send_ip" {
-  # Use local-exec provisioner to run a command
-  provisioner "local-exec" {
-    command = <<-EOT
-      python3 ${path.module}/sendToMaster.py \
-        --ipurl=${aws_instance.master_node.public_ip} \
-        --ip1=${aws_instance.master_node.private_ip} \
-        --ip2=${aws_instance.slave1.private_ip} \
-        --ip3=${aws_instance.slave2.private_ip} \
-        --ip4=${aws_instance.slave3.private_ip} 
-    EOT
-  }
-}
-
-resource "null_resource" "slave1_instance_send_ip" {
-  # Use local-exec provisioner to run a command
-  provisioner "local-exec" {
-    command = <<-EOT
-      python3 ${path.module}/sendToMaster.py \
-        --ipurl=${aws_instance.slave1.public_ip} \
-        --ip1=${aws_instance.master_node.private_ip} 
-    EOT
-  }
-}
-
-resource "null_resource" "slave2_instance_send_ip" {
-  # Use local-exec provisioner to run a command
-  provisioner "local-exec" {
-    command = <<-EOT
-      python3 ${path.module}/sendToMaster.py \
-        --ipurl=${aws_instance.slave2.public_ip} \
-        --ip1=${aws_instance.master_node.private_ip} 
-    EOT
-  }
-}
-
-resource "null_resource" "slave3_instance_send_ip" {
-  # Use local-exec provisioner to run a command
-  provisioner "local-exec" {
-    command = <<-EOT
-      python3 ${path.module}/sendToMaster.py \
-        --ipurl=${aws_instance.slave3.public_ip} \
-        --ip1=${aws_instance.master_node.private_ip} 
-    EOT
-  }
-}
-
 
 
 # BENCHMARK PART NEEDS TO BE DONE MANUALLY CHECK INSTRUCTIONS IN README

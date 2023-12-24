@@ -1,14 +1,17 @@
 #!/bin/bash
 
-if [ "$#" -ne 4 ]; then
-    echo "Usage: $0 <IP_ADDRESS_1> <IP_ADDRESS_2> <IP_ADDRESS_3> <IP_ADDRESS_4>"
-    exit 1
-fi
+# master
+IP_ADDRESS_1=172.31.20.182
+# slave 1
+IP_ADDRESS_2=172.31.17.145
+# slave 2
+IP_ADDRESS_3=172.31.22.69
+# slave 3
+IP_ADDRESS_4=172.31.18.246
 
-IP_ADDRESS_1=$1
-IP_ADDRESS_2=$2
-IP_ADDRESS_3=$3
-IP_ADDRESS_4=$4
+sudo apt-get update -y
+sudo apt-get upgrade -y
+sudo apt install unzip
 
 mkdir -p /opt/mysqlcluster/home
 cd /opt/mysqlcluster/home
@@ -73,4 +76,26 @@ sudo /opt/mysqlcluster/home/mysqlc/bin/mysqld --defaults-file=/opt/mysqlcluster/
 
 ndb_mgm -e show
 
-sudo git clone https://github.com/decorJim/log8415-personal-project.git
+cd /
+
+while ! mysqladmin ping --silent; do
+    sleep 1
+done
+
+sudo wget https://downloads.mysql.com/docs/sakila-db.zip
+sudo unzip sakila-db.zip
+cd sakila-db
+
+mysql -u root -e "SOURCE sakila-schema.sql;"
+mysql -u root -e "SOURCE sakila-data.sql;"
+
+mysql -u root -e "USE sakila; SHOW FULL TABLES;"
+mysql -u root -e "USE sakila; SELECT COUNT(*) FROM film;"
+
+mysql -u root -e "GRANT ALL PRIVILEGES ON sakila.* TO 'root'@'%' IDENTIFIED BY '' WITH GRANT OPTION;"
+mysql -u root -e "FLUSH PRIVILEGES"
+
+sudo sysbench /usr/share/sysbench/oltp_read_write.lua prepare --db-driver=mysql --mysql-host=ip-${IP_ADDRESS_1//./-}.ec2.internal --mysql-db=sakila --mysql-user=root --mysql-password --table-size=50000 
+sudo sysbench /usr/share/sysbench/oltp_read_write.lua run --db-driver=mysql --mysql-host=ip-${IP_ADDRESS_1//./-}.ec2.internal --mysql-db=sakila --mysql-user=root --mysql-password --table-size=50000 --threads=8 --time=20 --events=0 > 
+sudo sysbench /usr/share/sysbench/oltp_read_write.lua cleanup --db-driver=mysql --mysql-host=ip-${IP_ADDRESS_1//./-}.ec2.internal --mysql-db=sakila --mysql-user=root --mysql-password 
+

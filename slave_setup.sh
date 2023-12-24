@@ -1,10 +1,7 @@
 #!bin/bash
-if [ $# -eq 0 ]; then
-    echo "Usage: $0 <IP_ADDRESS>"
-    exit 1
-fi
 
-IP_ADDRESS=$1
+# master
+IP_ADDRESS=172.31.20.182
 
 mkdir -p /opt/mysqlcluster/home
 cd /opt/mysqlcluster/home

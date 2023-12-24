@@ -5,6 +5,10 @@
 - set path for terraform executable
 
 # instructions to run code
+- sign in accout
+- copy aws_access_key_id and paste in variable.tf
+- copy aws_secret_access_key and paste in variable.tf
+- copy aws_session_token and paste in variable.tf
 - run terraform once
 - copy ip for standalone and paste it in main.tf in standalone resource
 - copy ip for master and paste it in main.tf in master resource and in master_setup.sh and in slave_setup.sh
@@ -14,6 +18,9 @@
 - type in command "terraform destroy"
 - rerun terraform init
 - rerun terraform apply
+
+# destroy resource
+- terraform destroy
 
 
 # sources
