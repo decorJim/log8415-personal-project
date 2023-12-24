@@ -61,7 +61,7 @@ variable "outbound_didr_blocks" {
 variable "ami_id" {
     description="id of the AMI"
     type=string
-    default="ami-0fc5d935ebf8bc3bc"
+    default="ami-0c7217cdde317cfec"
 }
 
 variable "instance_type" {
