@@ -9,13 +9,13 @@ variable "aws_region" {
 variable "aws_access_key_id" {
     description="aws_access_key_id"
     type=string
-    default="ASIAXZSEYFC6V2HDLQU7"      # COPY PASTE from aws academy cli
+    default="AKIATWQRHF25Y6MDAUL2"      # COPY PASTE from aws academy cli
 }
 
 variable "aws_secret_access_key" {
     description="aws_secret_access_key"
     type=string
-    default="MvvIRBQwXhICCGkZ4iIFQUSay5eBjeL8+E+b8cXd"  # COPY PASTE from aws academy cli
+    default="XsAQnLSDkKgYUDRB7it6o31MF6PFR/S7sqSEMRhc"  # COPY PASTE from aws academy cli
 }
 
 variable "aws_session_token" {
@@ -30,25 +30,25 @@ variable "aws_session_token" {
 variable "master_private_ip" {
     description="security group name"
     type=string
-    default="172.31.29.45"   # COPY PASTE from terminal
+    default="172.31.87.75"   # COPY PASTE from terminal
 }
 
 variable "slave1_private_ip" {
     description="security group name"
     type=string
-    default="172.31.18.64"  # COPY PASTE from terminal
+    default="172.31.81.66"  # COPY PASTE from terminal
 } 
 
 variable "slave2_private_ip" {
     description="security group name"
     type=string
-    default="172.31.29.211"  # COPY PASTE from terminal
+    default="172.31.80.173"  # COPY PASTE from terminal
 }
 
 variable "slave3_private_ip" {
     description="security group name"
     type=string
-    default="172.31.27.151"  # COPY PASTE from terminal
+    default="172.31.94.84"  # COPY PASTE from terminal
 }
 
 variable "proxy_private_ip" {
@@ -62,7 +62,7 @@ variable "proxy_private_ip" {
 variable "proxy_key_name" {
     description="security group name"
     type=string
-    default="tmpkey"   # COPY PASTE from aws account in key pair section
+    default="tmp1"   # COPY PASTE from aws account in key pair section
 }
 
 

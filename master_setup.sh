@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # master
-IP_ADDRESS_1=172.31.29.45
+IP_ADDRESS_1=172.31.87.75
 
 # slave 1
-IP_ADDRESS_2=172.31.18.64
+IP_ADDRESS_2=172.31.81.66
 # slave 2
-IP_ADDRESS_3=172.31.29.211
+IP_ADDRESS_3=172.31.80.173
 # slave 3
-IP_ADDRESS_4=172.31.27.151
+IP_ADDRESS_4=172.31.94.84
 
 sudo apt-get update -y
 sudo apt-get upgrade -y
@@ -17,32 +17,32 @@ sudo apt install unzip
 mkdir -p /opt/mysqlcluster/home
 cd /opt/mysqlcluster/home
 
-wget http://dev.mysql.com/get/Downloads/MySQL-Cluster-7.2/mysql-cluster-gpl-7.2.1-linux2.6-x86_64.tar.gz
-tar xvf mysql-cluster-gpl-7.2.1-linux2.6-x86_64.tar.gz
-ln -s mysql-cluster-gpl-7.2.1-linux2.6-x86_64 mysqlc
+sudo wget http://dev.mysql.com/get/Downloads/MySQL-Cluster-7.2/mysql-cluster-gpl-7.2.1-linux2.6-x86_64.tar.gz
+sudo tar xvf mysql-cluster-gpl-7.2.1-linux2.6-x86_64.tar.gz
+sudo ln -s mysql-cluster-gpl-7.2.1-linux2.6-x86_64 mysqlc
 
-echo 'export MYSQLC_HOME=/opt/mysqlcluster/home/mysqlc' > /etc/profile.d/mysqlc.sh
-echo 'export PATH=$MYSQLC_HOME/bin:$PATH' >> /etc/profile.d/mysqlc.sh
+echo 'export MYSQLC_HOME=/opt/mysqlcluster/home/mysqlc' | sudo tee -a /etc/profile.d/mysqlc.sh
+source /etc/profile.d/mysqlc.sh
+echo 'export PATH=$MYSQLC_HOME/bin:$PATH' | sudo tee -a /etc/profile.d/mysqlc.sh
 source /etc/profile.d/mysqlc.sh
 sudo apt-get update && sudo apt-get -y install libncurses5
 
-mkdir -p /opt/mysqlcluster/deploy
-mkdir -p /opt/mysqlcluster/home/mysqlc
+sudo mkdir -p /opt/mysqlcluster/deploy
+sudo mkdir -p /opt/mysqlcluster/home/mysqlc
 cd /opt/mysqlcluster/deploy
-mkdir -p conf
-mkdir -p mysqld_data
-mkdir -p ndb_data
+sudo mkdir -p conf
+sudo mkdir -p mysqld_data
+sudo mkdir -p ndb_data
 
 sudo chmod +w ./conf
 
 # Create and write to my.cnf file
-sudo cat <<EOL > conf/my.cnf
-[mysqld]
+
+echo "[mysqld]
 ndbcluster
 datadir=/opt/mysqlcluster/deploy/mysqld_data
 basedir=/opt/mysqlcluster/home/mysqlc
-port=3306
-EOL
+port=3306" | sudo tee -a conf/my.cnf
 
 # CHANGE IP HERE
 echo "[ndb_mgmd]
@@ -75,9 +75,9 @@ sudo chown -R root /opt/mysqlcluster/home/mysqlc
 sudo /opt/mysqlcluster/home/mysqlc/bin/ndb_mgmd -f /opt/mysqlcluster/deploy/conf/config.ini --initial --configdir=/opt/mysqlcluster/deploy/conf/
 ndb_mgm -e show
 sudo /opt/mysqlcluster/home/mysqlc/bin/mysqld --defaults-file=/opt/mysqlcluster/deploy/conf/my.cnf --user=root &
-
 ndb_mgm -e show
 
+cd /
 
 while ! mysqladmin ping --silent; do
     sleep 1

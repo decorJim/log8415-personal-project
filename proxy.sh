@@ -2,14 +2,14 @@
 
 # ******************************** COPY AND PASTE public ip from terminal *************************
 # PUBLIC master
-IP_ADDRESS_1=54.162.171.69
+IP_ADDRESS_1=54.208.185.196
 
 # PUBLIC slave 1
-IP_ADDRESS_2=3.80.112.72
+IP_ADDRESS_2=52.87.229.14
 # PUBLIC slave 2
-IP_ADDRESS_3=52.23.225.16
+IP_ADDRESS_3=44.203.181.50
 # PUBLIC slave 3
-IP_ADDRESS_4=54.205.209.248
+IP_ADDRESS_4=54.166.118.162
 
 sudo apt-get update -y
 sudo apt-get upgrade -y
