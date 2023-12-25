@@ -1,7 +1,8 @@
 #!bin/bash
 
-# master
-IP_ADDRESS=172.31.20.182
+# ******************************** COPY AND PASTE private ip from terminal *************************
+# master private ip
+IP_ADDRESS_1=172.31.29.45
 
 mkdir -p /opt/mysqlcluster/home
 cd /opt/mysqlcluster/home
@@ -17,4 +18,6 @@ source /etc/profile.d/mysqlc.sh
 sudo apt-get update && sudo apt-get -y install libncurses5
 
 mkdir -p /opt/mysqlcluster/deploy/ndb_data
-ndbd -c ip-${IP_ADDRESS//./-}.ec2.internal:1186
+
+# CHANGE IP HERE
+ndbd -c ip-${IP_ADDRESS_1//./-}.ec2.internal:1186

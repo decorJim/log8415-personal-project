@@ -33,12 +33,11 @@ resource "aws_security_group" "my_group_1" {
   egress {
     from_port   = 0
     to_port     = 0
-    protocol    = var.protocol  # "-1" represents all protocols
+    protocol    = var.protocol 
     cidr_blocks = var.outbound_didr_blocks
     ipv6_cidr_blocks = var.ipv6_cidr_blocks
   }
 
-  vpc_id=data.aws_vpcs.all_vpcs.ids[0]
 }
 
 output "security_group_id" {
@@ -52,20 +51,11 @@ resource "tls_private_key" "my-privatekey" {
   rsa_bits  = 4096
 }
 
-output "my-privatekey" {
-  value=tls_private_key.my-privatekey
-  sensitive=true
-}
 
 resource "aws_key_pair" "generated_key" {
   key_name   = "my_key_1"
   public_key = tls_private_key.my-privatekey.public_key_openssh
 }
-
-output "generated_key" {
-  value=aws_key_pair.generated_key
-}
-
 
 
 # instance for mysql standalone
@@ -99,10 +89,6 @@ output "instance_id" {
   value=aws_instance.mysql_standalone.id
 }
 
-output "mysql_standalone_details" {
-  value = aws_instance.mysql_standalone
-}
-
 ############################################ mySQL cluster #################################################
 
 # master instance
@@ -117,7 +103,7 @@ resource "aws_instance" "master_node" {
     create_before_destroy=true
   }
 
-  private_ip="172.31.20.182"
+  private_ip=var.master_private_ip
 
   root_block_device {
     volume_type=var.volume_type
@@ -142,7 +128,7 @@ resource "aws_instance" "slave1" {
     create_before_destroy=true
   }
 
-  private_ip="172.31.17.145"
+  private_ip=var.slave1_private_ip
 
   root_block_device {
     volume_type=var.volume_type
@@ -167,7 +153,7 @@ resource "aws_instance" "slave2" {
     create_before_destroy=true
   }
 
-  private_ip="172.31.22.69"
+  private_ip=var.slave2_private_ip
 
   root_block_device {
     volume_type=var.volume_type
@@ -192,7 +178,7 @@ resource "aws_instance" "slave3" {
     create_before_destroy=true
   }
 
-  private_ip="172.31.18.246"
+  private_ip=var.slave3_private_ip
 
   root_block_device {
     volume_type=var.volume_type
@@ -209,28 +195,121 @@ resource "aws_instance" "slave3" {
 
 ##############################################################################
 
-output "master_ip" {
+output "master_public_ip" {
   depends_on=[aws_instance.master_node]
   value=aws_instance.master_node.public_ip
 }
 
+output "master_private_ip" {
+  depends_on=[aws_instance.master_node]
+  value=aws_instance.master_node.private_ip
+}
 
-# BENCHMARK PART NEEDS TO BE DONE MANUALLY CHECK INSTRUCTIONS IN README
-# resource "null_resource" "cluster_benchmark_activation" {
-#   depends_on=[
-#     null_resource.slave_1_setup,
-#     null_resource.slave_2_setup,
-#     null_resource.slave_3_setup
-#   ]
+output "slave1_public_ip" {
+  depends_on=[aws_instance.slave1]
+  value=aws_instance.slave1.public_ip
+}
 
-#   # Use local-exec provisioner to run a command
-#   provisioner "local-exec" {
-#     command = <<-EOT
-#       python3 ${path.module}/cluster_benchmarks.py \
-#         --ipurl=${aws_instance.master_node.public_ip}
-#     EOT
-#   }
-# }
+output "slave1_private_ip" {
+  depends_on=[aws_instance.slave1]
+  value=aws_instance.slave1.private_ip
+}
+
+output "slave2_public_ip" {
+  depends_on=[aws_instance.slave2]
+  value=aws_instance.slave2.public_ip
+}
+
+output "slave2_private_ip" {
+  depends_on=[aws_instance.slave2]
+  value=aws_instance.slave2.private_ip
+}
+
+output "slave3_public_ip" {
+  depends_on=[aws_instance.slave3]
+  value=aws_instance.slave3.public_ip
+}
+
+output "slave3_private_ip" {
+  depends_on=[aws_instance.slave3]
+  value=aws_instance.slave3.private_ip
+}
+
+
+# create security group
+resource "aws_security_group" "my_proxy" {
+  name        = var.proxy_group_name
+  description = "Allow SSH inbound traffic"
+
+   # rules
+  # ingress {
+  #   from_port   = 22
+  #   to_port     = 22
+  #   protocol    = var.tcp_protocol
+  #   cidr_blocks = var.ssh_cidr_blocks  
+  #   ipv6_cidr_blocks = var.ipv6_cidr_blocks
+  # }
+
+  # ingress {
+  #   from_port   = 80
+  #   to_port     = 80
+  #   protocol    = var.tcp_protocol
+  #   cidr_blocks = var.ssh_cidr_blocks  
+  #   ipv6_cidr_blocks = var.ipv6_cidr_blocks
+  # }
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = var.protocol
+    cidr_blocks = var.ssh_cidr_blocks  
+    ipv6_cidr_blocks = var.ipv6_cidr_blocks
+  }
+
+  # Outbound rule to allow all traffic
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = var.protocol  
+    cidr_blocks = var.outbound_didr_blocks
+    ipv6_cidr_blocks = var.ipv6_cidr_blocks
+  }
+
+}
+
+
+# proxy
+resource "aws_instance" "proxy" {
+  ami = var.ami_id
+  instance_type=var.large
+  vpc_security_group_ids=[aws_security_group.my_proxy.id]
+  key_name=var.proxy_key_name     # NEED TO CHANGE ALWAYS
+
+  lifecycle {
+    create_before_destroy=true
+  }
+
+  #private_ip="172.31.23.24"
+
+  root_block_device {
+    volume_type=var.volume_type
+    volume_size=var.volume_size
+  }
+
+  user_data = file("${path.module}/proxy.sh")
+
+  tags = {
+    Name = "proxy"
+  }
+  
+  availability_zone=var.availability_zone
+}
+
+output "proxy_public_ip" {
+  depends_on=[aws_instance.proxy]
+  value=aws_instance.proxy.public_ip
+}
+
 
 
 

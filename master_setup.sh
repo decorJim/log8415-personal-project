@@ -1,13 +1,14 @@
 #!/bin/bash
 
 # master
-IP_ADDRESS_1=172.31.20.182
+IP_ADDRESS_1=172.31.29.45
+
 # slave 1
-IP_ADDRESS_2=172.31.17.145
+IP_ADDRESS_2=172.31.18.64
 # slave 2
-IP_ADDRESS_3=172.31.22.69
+IP_ADDRESS_3=172.31.29.211
 # slave 3
-IP_ADDRESS_4=172.31.18.246
+IP_ADDRESS_4=172.31.27.151
 
 sudo apt-get update -y
 sudo apt-get upgrade -y
@@ -43,6 +44,7 @@ basedir=/opt/mysqlcluster/home/mysqlc
 port=3306
 EOL
 
+# CHANGE IP HERE
 echo "[ndb_mgmd]
 hostname=ip-${IP_ADDRESS_1//./-}.ec2.internal
 datadir=/opt/mysqlcluster/deploy/ndb_data
@@ -76,7 +78,6 @@ sudo /opt/mysqlcluster/home/mysqlc/bin/mysqld --defaults-file=/opt/mysqlcluster/
 
 ndb_mgm -e show
 
-cd /
 
 while ! mysqladmin ping --silent; do
     sleep 1
@@ -95,7 +96,7 @@ mysql -u root -e "USE sakila; SELECT COUNT(*) FROM film;"
 mysql -u root -e "GRANT ALL PRIVILEGES ON sakila.* TO 'root'@'%' IDENTIFIED BY '' WITH GRANT OPTION;"
 mysql -u root -e "FLUSH PRIVILEGES"
 
-sudo sysbench /usr/share/sysbench/oltp_read_write.lua prepare --db-driver=mysql --mysql-host=ip-${IP_ADDRESS_1//./-}.ec2.internal --mysql-db=sakila --mysql-user=root --mysql-password --table-size=50000 
-sudo sysbench /usr/share/sysbench/oltp_read_write.lua run --db-driver=mysql --mysql-host=ip-${IP_ADDRESS_1//./-}.ec2.internal --mysql-db=sakila --mysql-user=root --mysql-password --table-size=50000 --threads=8 --time=20 --events=0 > 
+sudo sysbench /usr/share/sysbench/oltp_read_write.lua prepare --db-driver=mysql --mysql-host=ip-${IP_ADDRESS_1//./-}.ec2.internal --mysql-db=sakila --mysql-user=root --mysql-password --table-size=1000000 
+sudo sysbench /usr/share/sysbench/oltp_read_write.lua run --db-driver=mysql --mysql-host=ip-${IP_ADDRESS_1//./-}.ec2.internal --mysql-db=sakila --mysql-user=root --mysql-password --table-size=1000000 --threads=8 --time=20 --events=0 > mycluster_results
 sudo sysbench /usr/share/sysbench/oltp_read_write.lua cleanup --db-driver=mysql --mysql-host=ip-${IP_ADDRESS_1//./-}.ec2.internal --mysql-db=sakila --mysql-user=root --mysql-password 
 
