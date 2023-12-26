@@ -45,25 +45,12 @@ output "security_group_id" {
 }
 
 
-# key-pair creation
-resource "tls_private_key" "my-privatekey" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
-
-resource "aws_key_pair" "generated_key" {
-  key_name   = "my_key_1"
-  public_key = tls_private_key.my-privatekey.public_key_openssh
-}
-
-
 # instance for mysql standalone
 resource "aws_instance" "mysql_standalone" {
   ami = var.ami_id
   instance_type=var.instance_type
   vpc_security_group_ids=[aws_security_group.my_group_1.id]
-  key_name=aws_key_pair.generated_key.key_name
+  key_name=var.proxy_key_name
   # script for standalone setup
   user_data = file("${path.module}/sql_standalone.sh")
      
@@ -96,7 +83,7 @@ resource "aws_instance" "master_node" {
   ami = var.ami_id
   instance_type=var.instance_type
   vpc_security_group_ids=[aws_security_group.my_group_1.id]
-  key_name=aws_key_pair.generated_key.key_name
+  key_name=var.proxy_key_name
   # script for master
   user_data = file("${path.module}/master_setup.sh")
   lifecycle {
@@ -122,7 +109,7 @@ resource "aws_instance" "slave1" {
   ami = var.ami_id
   instance_type=var.instance_type
   vpc_security_group_ids=[aws_security_group.my_group_1.id]
-  key_name=aws_key_pair.generated_key.key_name
+  key_name=var.proxy_key_name
   user_data = file("${path.module}/slave_setup.sh")
   lifecycle {
     create_before_destroy=true
@@ -147,7 +134,7 @@ resource "aws_instance" "slave2" {
   ami = var.ami_id
   instance_type=var.instance_type
   vpc_security_group_ids=[aws_security_group.my_group_1.id]
-  key_name=aws_key_pair.generated_key.key_name
+  key_name=var.proxy_key_name
   user_data = file("${path.module}/slave_setup.sh")
   lifecycle {
     create_before_destroy=true
@@ -172,7 +159,7 @@ resource "aws_instance" "slave3" {
   ami = var.ami_id
   instance_type=var.instance_type
   vpc_security_group_ids=[aws_security_group.my_group_1.id]
-  key_name=aws_key_pair.generated_key.key_name
+  key_name=var.proxy_key_name
   user_data = file("${path.module}/slave_setup.sh")
   lifecycle {
     create_before_destroy=true
@@ -242,22 +229,6 @@ resource "aws_security_group" "my_proxy" {
   description = "Allow SSH inbound traffic"
 
    # rules
-  # ingress {
-  #   from_port   = 22
-  #   to_port     = 22
-  #   protocol    = var.tcp_protocol
-  #   cidr_blocks = var.ssh_cidr_blocks  
-  #   ipv6_cidr_blocks = var.ipv6_cidr_blocks
-  # }
-
-  # ingress {
-  #   from_port   = 80
-  #   to_port     = 80
-  #   protocol    = var.tcp_protocol
-  #   cidr_blocks = var.ssh_cidr_blocks  
-  #   ipv6_cidr_blocks = var.ipv6_cidr_blocks
-  # }
-
   ingress {
     from_port   = 0
     to_port     = 0
@@ -280,6 +251,12 @@ resource "aws_security_group" "my_proxy" {
 
 # proxy
 resource "aws_instance" "proxy" {
+  depends_on=[
+    aws_instance.master_node,
+    aws_instance.slave1,
+    aws_instance.slave2,
+    aws_instance.slave3
+  ]
   ami = var.ami_id
   instance_type=var.large
   vpc_security_group_ids=[aws_security_group.my_proxy.id]

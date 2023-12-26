@@ -9,13 +9,13 @@ variable "aws_region" {
 variable "aws_access_key_id" {
     description="aws_access_key_id"
     type=string
-    default="AKIATWQRHF25Y6MDAUL2"      # COPY PASTE from aws academy cli
+    default=      # COPY PASTE from aws academy cli
 }
 
 variable "aws_secret_access_key" {
     description="aws_secret_access_key"
     type=string
-    default="XsAQnLSDkKgYUDRB7it6o31MF6PFR/S7sqSEMRhc"  # COPY PASTE from aws academy cli
+    default=  # COPY PASTE from aws academy cli
 }
 
 variable "aws_session_token" {
