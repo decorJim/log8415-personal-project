@@ -259,14 +259,12 @@ resource "aws_instance" "proxy" {
   ]
   ami = var.ami_id
   instance_type=var.large
-  vpc_security_group_ids=[aws_security_group.my_proxy.id]
+  vpc_security_group_ids=[aws_security_group.my_proxy.id] 
   key_name=var.proxy_key_name     # NEED TO CHANGE ALWAYS
 
   lifecycle {
     create_before_destroy=true
   }
-
-  #private_ip="172.31.23.24"
 
   root_block_device {
     volume_type=var.volume_type
@@ -288,6 +286,63 @@ output "proxy_public_ip" {
 }
 
 
+
+# trusted host
+resource "aws_instance" "trustedhost" {
+  depends_on=[
+    aws_instance.proxy
+  ]
+  ami = var.ami_id
+  instance_type=var.large
+  vpc_security_group_ids=[aws_security_group.my_proxy.id]  # TO CHANGE 
+  key_name=var.proxy_key_name     # NEED TO CHANGE ALWAYS
+
+  lifecycle {
+    create_before_destroy=true
+  }
+
+  root_block_device {
+    volume_type=var.volume_type
+    volume_size=var.volume_size
+  }
+
+  user_data = file("${path.module}/trustedhost.sh")
+
+  tags = {
+    Name = "trustedhost"
+  }
+  
+  availability_zone=var.availability_zone
+}
+
+
+# gatekeeper
+resource "aws_instance" "gatekeeper" {
+  depends_on=[
+    aws_instance.trustedhost
+  ]
+  ami = var.ami_id
+  instance_type=var.large
+  vpc_security_group_ids=[aws_security_group.my_proxy.id] 
+  key_name=var.proxy_key_name     # NEED TO CHANGE ALWAYS
+
+  lifecycle {
+    create_before_destroy=true
+  }
+
+  root_block_device {
+    volume_type=var.volume_type
+    volume_size=var.volume_size
+  }
+
+  user_data = file("${path.module}/gatekeeper.sh")
+
+  tags = {
+    Name = "gatekeeper"
+  }
+  
+  availability_zone=var.availability_zone
+}
 
 
 
