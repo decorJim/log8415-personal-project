@@ -26,4 +26,4 @@ echo "ACCESS_KEY_ID=$ACCESS_KEY_ID" | sudo tee -a .env
 echo "SECRET_ACCESS_KEY_ID=$SECRET_ACCESS_KEY_ID" | sudo tee -a .env
 echo "REGION=$REGION" | sudo tee -a .env
 
-#sudo python3 app.y 
+sudo python3 app.y 
