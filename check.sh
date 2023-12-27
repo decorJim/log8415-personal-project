@@ -1,4 +1,5 @@
 #!/bin/bash
+IP_ADDRESS_1=$1
 
 sudo wget https://downloads.mysql.com/docs/sakila-db.zip
 sudo unzip sakila-db.zip
