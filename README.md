@@ -23,6 +23,7 @@
 - copy all private ip of resources from in terminal and paste them in master_setup.sh, slavve_setup.sh and proxy.sh
 - use command git clone "https://github.com/decorJim/proxy-app.git", "https://github.com/decorJim/trusted-host.git" and 
 "https://github.com/decorJim/gatekeeper.git"
+- ideally all repo should be private and add in credentials in scripts to clone
 - delete any existing keys inside the repos
 - from your aws account create a new key-pair in .pem format named "tmp1.pem" on your local computer and add it inside the proxy-app, trusted-host and gatekeeper directory
 - push it

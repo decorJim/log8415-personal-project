@@ -295,14 +295,14 @@ resource "aws_security_group" "trustedhost_group" {
     from_port   = 80       # HTTP
     to_port     = 80
     protocol    = var.tcp_protocol
-    cidr_blocks = ["172.31.85.181/32"]
+    cidr_blocks = ["${var.gatekeeper_private_ip}/32"]
   }
 
   ingress {
     from_port   = 22       # ssh
     to_port     = 22
     protocol    = var.ssh_protocol
-    cidr_blocks = ["172.31.85.181/32"]
+    cidr_blocks = ["${var.gatekeeper_private_ip}/32"]
   }
 
   # Outbound rule to allow all traffic
