@@ -4,18 +4,17 @@ variable "aws_region" {
     default="us-east-1"
 }
 
-
 # Credentials *****NEEDS TO CHANGE EVRYTIME WE RUN SESSION*****
 variable "aws_access_key_id" {
     description="aws_access_key_id"
     type=string
-    default=      # COPY PASTE from aws academy cli
+    default=""       # COPY PASTE from aws academy cli
 }
 
 variable "aws_secret_access_key" {
     description="aws_secret_access_key"
     type=string
-    default=  # COPY PASTE from aws academy cli
+    default=""  # COPY PASTE from aws academy cli
 }
 
 variable "aws_session_token" {
@@ -28,34 +27,35 @@ variable "aws_session_token" {
 
 # *********** IP NEED TO CHANGE PUT NULL in value IF FIRST TIME RUNNING main.tf NEED TO COPY AND PASTE VALUES FROM TERMINAL **************
 variable "master_private_ip" {
-    description="security group name"
+    description="master ip"
     type=string
-    default="172.31.87.75"   # COPY PASTE from terminal
+    default="172.31.89.131"   # COPY PASTE from terminal
 }
 
 variable "slave1_private_ip" {
-    description="security group name"
+    description="slave 1 ip"
     type=string
-    default="172.31.81.66"  # COPY PASTE from terminal
+    default="172.31.82.240"  # COPY PASTE from terminal
 } 
 
 variable "slave2_private_ip" {
-    description="security group name"
+    description="slave 2 ip"
     type=string
-    default="172.31.80.173"  # COPY PASTE from terminal
+    default="172.31.88.227" # COPY PASTE from terminal
 }
 
 variable "slave3_private_ip" {
-    description="security group name"
+    description="slave 3 ip"
     type=string
-    default="172.31.94.84"  # COPY PASTE from terminal
+    default="172.31.94.184"  # COPY PASTE from terminal
 }
 
-variable "proxy_private_ip" {
+variable "gatekeeper_private_ip" {
     description="security group name"
     type=string
-    default=null   
+    default="172.31.85.181"  # COPY PASTE MANUALLY FROM ACCOUNT PREVENT SECURITY GROUP ERROR
 }
+
 
 # ************** KEY USED ON PROXY MACHINE NEEDS TO BE NULL IF FIRST TIME RUNNING main.tf ******************
 # ************** AFTER MANUAL CREATION COPY AND PASTE THE KEYNAME HERE **********************
@@ -66,8 +66,7 @@ variable "proxy_key_name" {
 }
 
 
-
-# security group configuration
+# security group names
 variable "security_group_name" {
     description="security group name"
     type=string
@@ -80,6 +79,13 @@ variable "proxy_group_name" {
     default="my_proxy"
 }
 
+variable "trustedhost_group_name" {
+    description="trustedhost security group"
+    type=string
+    default="trustedhost_group_1"
+}
+
+# ssh_cidr_blocks
 variable "ssh_cidr_blocks" {
     description="allow ssh"
     type=list(string)
@@ -119,13 +125,13 @@ variable "ipv6_cidr_blocks" {
 variable "tcp_protocol" {
     description="tcp protocol"
     type=string
-    default="-1" 
+    default="tcp" 
 }
 
 variable "ssh_protocol" {
-    description="tcp protocol"
+    description="ssh protocol"
     type=string
-    default="-1" 
+    default="tcp" 
 }
 
 

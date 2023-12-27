@@ -2,7 +2,7 @@
 
 # ******************************** COPY AND PASTE private ip from terminal *************************
 # master private ip
-IP_ADDRESS_1=172.31.87.75
+IP_ADDRESS_1=172.31.89.131
 
 sudo mkdir -p /opt/mysqlcluster/home
 cd /opt/mysqlcluster/home

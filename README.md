@@ -6,6 +6,10 @@
 
 # instructions to run code
 - sign in accout
+- manually create temporary instance
+- copy paste temporary instance private ip in gatekeeper_private_ip variable in file variable.tf
+- delete temporary instance
+
 - copy aws_access_key_id and paste in variable.tf
 - copy aws_secret_access_key and paste in variable.tf
 - copy aws_session_token and paste in variable.tf
@@ -17,11 +21,12 @@
 - run terraform once with all resource (make sure to keep the values of private ip of resource and the keyname of proxy to null in variable.tf)
 - copy all private ip of resources from in terminal and paste them in variable.tf file in appropriate section
 - copy all private ip of resources from in terminal and paste them in master_setup.sh, slavve_setup.sh and proxy.sh
-- use command git clone "https://github.com/decorJim/proxy-app"
-- delete any existing keys inside the repo
-- from your aws account create a new key-pair in .pem format on your local computer and add it inside the proxy-app directory
+- use command git clone "https://github.com/decorJim/proxy-app.git", "https://github.com/decorJim/trusted-host.git" and 
+"https://github.com/decorJim/gatekeeper.git"
+- delete any existing keys inside the repos
+- from your aws account create a new key-pair in .pem format named "tmp1.pem" on your local computer and add it inside the proxy-app, trusted-host and gatekeeper directory
 - push it
-- paste the keyname at the variable in resource "master, slave1, slave2, slave3, proxy" keyname variable in main.tf
+- paste the keyname at the variable in resource "master, slave1, slave2, slave3, proxy, trustedhost, gatekeeper" keyname variable in main.tf
 
 - type in command "terraform destroy"
 - rerun terraform init

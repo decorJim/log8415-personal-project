@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # NEED TO CHANGE EVERY SESSION
-ACCESS_KEY_ID=
-SECRET_ACCESS_KEY_ID=
+ACCESS_KEY_ID=""
+SECRET_ACCESS_KEY_ID=""
 REGION="us-east-1"
 
 sudo apt-get update -y

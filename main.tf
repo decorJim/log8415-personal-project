@@ -26,7 +26,6 @@ resource "aws_security_group" "my_group_1" {
     to_port     = 0
     protocol    = var.protocol
     cidr_blocks = var.ssh_cidr_blocks  
-    ipv6_cidr_blocks = var.ipv6_cidr_blocks
   }
 
   # Outbound rule to allow all traffic
@@ -35,7 +34,6 @@ resource "aws_security_group" "my_group_1" {
     to_port     = 0
     protocol    = var.protocol 
     cidr_blocks = var.outbound_didr_blocks
-    ipv6_cidr_blocks = var.ipv6_cidr_blocks
   }
 
 }
@@ -103,6 +101,7 @@ resource "aws_instance" "master_node" {
 
   availability_zone=var.availability_zone
 }
+
 
 # slave nodes
 resource "aws_instance" "slave1" {
@@ -286,6 +285,39 @@ output "proxy_public_ip" {
 }
 
 
+# create security group
+resource "aws_security_group" "trustedhost_group" {
+  name        = var.trustedhost_group_name
+  description = "Allow HTTP and SSH inbound traffic from gatekeeper"
+
+   # only accept traffic from gatekeeper ip with port 80 and 22
+  ingress {
+    from_port   = 80       # HTTP
+    to_port     = 80
+    protocol    = var.tcp_protocol
+    cidr_blocks = ["172.31.85.181/32"]
+  }
+
+  ingress {
+    from_port   = 22       # ssh
+    to_port     = 22
+    protocol    = var.ssh_protocol
+    cidr_blocks = ["172.31.85.181/32"]
+  }
+
+  # Outbound rule to allow all traffic
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = var.protocol  
+    cidr_blocks = var.outbound_didr_blocks
+    ipv6_cidr_blocks = var.ipv6_cidr_blocks
+  }
+
+}
+
+
+
 
 # trusted host
 resource "aws_instance" "trustedhost" {
@@ -294,7 +326,7 @@ resource "aws_instance" "trustedhost" {
   ]
   ami = var.ami_id
   instance_type=var.large
-  vpc_security_group_ids=[aws_security_group.my_proxy.id]  # TO CHANGE 
+  vpc_security_group_ids=[aws_security_group.trustedhost_group.id]  # TO CHANGE 
   key_name=var.proxy_key_name     # NEED TO CHANGE ALWAYS
 
   lifecycle {
@@ -323,12 +355,14 @@ resource "aws_instance" "gatekeeper" {
   ]
   ami = var.ami_id
   instance_type=var.large
-  vpc_security_group_ids=[aws_security_group.my_proxy.id] 
+  vpc_security_group_ids=[aws_security_group.my_group_1.id] 
   key_name=var.proxy_key_name     # NEED TO CHANGE ALWAYS
 
   lifecycle {
     create_before_destroy=true
   }
+
+  private_ip=var.gatekeeper_private_ip
 
   root_block_device {
     volume_type=var.volume_type
@@ -344,6 +378,14 @@ resource "aws_instance" "gatekeeper" {
   availability_zone=var.availability_zone
 }
 
+output "gatekeeper_public_ip" {
+  depends_on=[aws_instance.gatekeeper]
+  value=aws_instance.gatekeeper.public_ip
+}
 
+output "gatekeeper_private_ip" {
+  depends_on=[aws_instance.gatekeeper]
+  value=aws_instance.gatekeeper.private_ip
+}
 
 
